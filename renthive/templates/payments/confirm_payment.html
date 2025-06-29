@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Payment{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4">Confirm Payment</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Tenant:</strong> {{ payment.lease.tenant.get_full_name|default:payment.lease.tenant.username }}</p>
+            <p><strong>Unit:</strong> {{ payment.lease.unit.unit_number }}</p>
+            <p><strong>Amount:</strong> ${{ payment.amount }}</p>
+            <p><strong>Date:</strong> {{ payment.payment_date }}</p>
+            <p><strong>Status:</strong> {% if payment.is_confirmed %}Confirmed{% else %}Pending{% endif %}</p>
+        </div>
+    </div>
+    {% if not payment.is_confirmed %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success w-100">Confirm Payment</button>
+    </form>
+    {% endif %}
+    <div class="mt-3">
+        <a href="{% url 'payments:owner_payments' %}">Back to All Payments</a>
+    </div>
+</div>
+{% endblock %}

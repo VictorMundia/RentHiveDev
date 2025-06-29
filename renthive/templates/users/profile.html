@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+    <hr>
+    <h4>Statistics</h4>
+    <ul>
+        <li>Total Properties: {{ total_properties }}</li>
+    </ul>
+    <hr>
+    <h4>Your Properties</h4>
+    {% if properties %}
+        <div class="row">
+            {% for property in properties %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ property.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ property.location }}</h6>
+                            <p class="card-text">{{ property.description|truncatewords:20 }}</p>
+                            <a href="{% url 'users:profile' %}?property={{ property.pk }}" class="btn btn-outline-primary w-100">View Statistics</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have no properties yet.</p>
+    {% endif %}
+    <a href="{% url 'properties:property_create' %}" class="btn btn-success">Add Property</a>
+    {% if selected_property %}
+        <hr>
+        <h4>Statistics for {{ selected_property.name }}</h4>
+        <ul>
+            <li>Vacant Units: {{ vacant_units }}</li>
+            <li>Occupied Units: {{ occupied_units }}</li>
+            <li>Units with Paid Rent: {{ paid_units }}</li>
+            <li>Units with Unpaid Rent: {{ unpaid_units }}</li>
+            <li>Maintenance Requests: {{ maintenance_requests }}</li>
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

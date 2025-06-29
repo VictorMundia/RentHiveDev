@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}My Properties{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">My Properties</h2>
+    {% if property_stats %}
+        <div class="row">
+            {% for stat in property_stats %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ stat.property.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ stat.property.location }}</h6>
+                            <p class="card-text">{{ stat.property.description|truncatewords:20 }}</p>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item">Vacant Units: {{ stat.vacant_units }}</li>
+                                <li class="list-group-item">Occupied Units: {{ stat.occupied_units }}</li>
+                                <li class="list-group-item">Units with Paid Rent: {{ stat.paid_units }}</li>
+                                <li class="list-group-item">Units with Unpaid Rent: {{ stat.unpaid_units }}</li>
+                                <li class="list-group-item">Maintenance Requests: {{ stat.maintenance_requests }}</li>
+                                <li class="list-group-item">Total Rent Paid: ${{ stat.total_rent_paid }}</li>
+                                <li class="list-group-item">Total Units Occupied: {{ stat.occupied_units }}</li>
+                            </ul>
+                            <a href="{% url 'properties:property_detail' stat.property.pk %}" class="btn btn-outline-primary w-100 mb-2">View Details</a>
+                            <a href="{% url 'properties:property_update' stat.property.pk %}" class="btn btn-outline-secondary w-100 mb-2">Edit</a>
+                            <a href="{% url 'properties:property_delete' stat.property.pk %}" class="btn btn-outline-danger w-100">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have no properties yet.</p>
+    {% endif %}
+    <a href="{% url 'properties:property_create' %}" class="btn btn-success">Add Property</a>
+</div>
+{% endblock %}

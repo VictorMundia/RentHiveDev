@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Delete Property{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4">Delete Property</h2>
+    <div class="alert alert-danger">
+        <strong>Are you sure you want to delete the property "{{ property.name }}"?</strong>
+        <p>This action cannot be undone. All units and related data will be deleted.</p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+        <a href="{% url 'properties:property_list' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

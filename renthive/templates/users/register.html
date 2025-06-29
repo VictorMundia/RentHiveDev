@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4">Register</h2>
+    {% if invited_unit %}
+        <div class="alert alert-info">
+            You are registering as a tenant for unit {{ invited_unit.unit_number }} at {{ invited_unit.property.name }}.
+        </div>
+    {% endif %}
+    {% if show_errors and form.errors %}
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% if form.username.help_text %}
+                <small class="form-text text-muted">{{ form.username.help_text }}</small>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+        </div>
+        <div class="mb-3">
+            {{ form.user_type.label_tag }}
+            {{ form.user_type }}
+        </div>
+        <div class="mb-3">
+            {{ form.phone_number.label_tag }}
+            {{ form.phone_number }}
+        </div>
+        <div class="mb-3">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {% if form.password1.help_text %}
+                <small class="form-text text-muted">{{ form.password1.help_text|safe }}</small>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {% if form.password2.help_text %}
+                <small class="form-text text-muted">{{ form.password2.help_text|safe }}</small>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+    <div class="mt-3">
+        <a href="/accounts/login/">Already have an account? Login</a>
+    </div>
+</div>
+{% endblock %}

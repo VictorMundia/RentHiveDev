@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Maintenance Chats{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Maintenance Chats</h2>
+    {% if chats %}
+        <ul class="list-group">
+            {% for chat in chats %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Unit {{ chat.unit.unit_number }} ({{ chat.unit.property.name }}) - Tenant: {{ chat.tenant.get_full_name|default:chat.tenant.username }}
+                    <a href="{% url 'maintenance:owner_chat_detail' chat.id %}" class="btn btn-sm btn-outline-primary">View Chat</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No maintenance chats yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

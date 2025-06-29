@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Property Details{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ property.name }}</h2>
+    <h5 class="text-muted">{{ property.location }}</h5>
+    <p>{{ property.description }}</p>
+    <hr>
+    <h4>Statistics</h4>
+    <ul>
+        <li>Vacant Units: {{ vacant_units }}</li>
+        <li>Occupied Units: {{ occupied_units }}</li>
+        <li>Units with Paid Rent: {{ paid_units }}</li>
+        <li>Units with Unpaid Rent: {{ unpaid_units }}</li>
+        <li>Maintenance Requests: {{ maintenance_requests }}</li>
+        <li>Total Rent Paid: ${{ total_rent_paid }}</li>
+    </ul>
+    <hr>
+    <h4>Invite Tenant to Property</h4>
+    <a href="{% url 'properties:invite_tenant_property' property.pk %}" class="btn btn-outline-primary mb-4">Invite Tenant</a>
+    <a href="{% url 'properties:add_unit' property.pk %}" class="btn btn-success mb-4">Add Unit</a>
+    <h4>Units</h4>
+    {% if units %}
+        <div class="row">
+            {% for unit in units %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Unit {{ unit.unit_number }}</h5>
+                            <p>Bedrooms: {{ unit.bedrooms }}</p>
+                            <p>Status: {{ unit.status|title }}</p>
+                            <p>Rent Amount: ${{ unit.rent_amount }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No units found for this property.</p>
+    {% endif %}
+    <a href="{% url 'properties:property_list' %}" class="btn btn-secondary mt-3">Back to Properties</a>
+</div>
+{% endblock %}
