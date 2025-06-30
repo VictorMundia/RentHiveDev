@@ -1,44 +1,75 @@
 {% extends 'base.html' %}
 {% block title %}Profile{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Welcome, {{ user.get_full_name|default:user.username }}!</h2>
-    <hr>
-    <h4>Statistics</h4>
-    <ul>
-        <li>Total Properties: {{ total_properties }}</li>
-    </ul>
-    <hr>
-    <h4>Your Properties</h4>
+<div class="flex flex-col items-center justify-center min-h-[70vh] py-10">
+  <h2 class="text-3xl font-extrabold text-black mb-2 text-center">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+  <p class="text-lg text-gray-700 mb-8 text-center">Manage your properties, view statistics, and grow your rental business with RentHive.</p>
+  <div class="w-full max-w-4xl mb-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">
+        <span class="text-4xl font-bold text-primary mb-2">{{ total_properties }}</span>
+        <span class="text-gray-700 font-semibold">Total Properties</span>
+      </div>
+      {% if selected_property %}
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">
+        <span class="text-4xl font-bold text-primary mb-2">{{ vacant_units }}</span>
+        <span class="text-gray-700 font-semibold">Vacant Units</span>
+      </div>
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">
+        <span class="text-4xl font-bold text-primary mb-2">{{ occupied_units }}</span>
+        <span class="text-gray-700 font-semibold">Occupied Units</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="w-full max-w-4xl">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-2xl font-bold text-black">Your Properties</h3>
+      <a href="{% url 'properties:property_create' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Add Property</a>
+    </div>
     {% if properties %}
-        <div class="row">
-            {% for property in properties %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ property.name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ property.location }}</h6>
-                            <p class="card-text">{{ property.description|truncatewords:20 }}</p>
-                            <a href="{% url 'users:profile' %}?property={{ property.pk }}" class="btn btn-outline-primary w-100">View Statistics</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for property in properties %}
+          <div class="bg-white rounded-lg shadow border border-gray-200 flex flex-col h-full">
+            <div class="p-5 flex-1 flex flex-col">
+              <h4 class="text-lg font-bold text-black mb-1">{{ property.name }}</h4>
+              <p class="text-sm text-gray-700 mb-2">{{ property.location }}</p>
+              <p class="text-gray-800 text-sm mb-4">{{ property.description|truncatewords:20 }}</p>
+              <a href="{% url 'users:profile' %}?property={{ property.pk }}" class="w-full border border-primary text-black font-semibold rounded py-1 hover:bg-primary hover:text-black transition text-center">View Statistics</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     {% else %}
-        <p>You have no properties yet.</p>
+      <p class="text-gray-700">You have no properties yet.</p>
     {% endif %}
-    <a href="{% url 'properties:property_create' %}" class="btn btn-success">Add Property</a>
-    {% if selected_property %}
-        <hr>
-        <h4>Statistics for {{ selected_property.name }}</h4>
-        <ul>
-            <li>Vacant Units: {{ vacant_units }}</li>
-            <li>Occupied Units: {{ occupied_units }}</li>
-            <li>Units with Paid Rent: {{ paid_units }}</li>
-            <li>Units with Unpaid Rent: {{ unpaid_units }}</li>
-            <li>Maintenance Requests: {{ maintenance_requests }}</li>
-        </ul>
-    {% endif %}
+  </div>
+  {% if selected_property %}
+    <div class="w-full max-w-2xl mt-10">
+      <h3 class="text-xl font-bold text-black mb-4">Statistics for {{ selected_property.name }}</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
+          <span class="block text-lg font-bold text-black">Vacant Units</span>
+          <span class="text-2xl font-extrabold text-primary">{{ vacant_units }}</span>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
+          <span class="block text-lg font-bold text-black">Occupied Units</span>
+          <span class="text-2xl font-extrabold text-primary">{{ occupied_units }}</span>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
+          <span class="block text-lg font-bold text-black">Units with Paid Rent</span>
+          <span class="text-2xl font-extrabold text-primary">{{ paid_units }}</span>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
+          <span class="block text-lg font-bold text-black">Units with Unpaid Rent</span>
+          <span class="text-2xl font-extrabold text-primary">{{ unpaid_units }}</span>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
+          <span class="block text-lg font-bold text-black">Maintenance Requests</span>
+          <span class="text-2xl font-extrabold text-primary">{{ maintenance_requests }}</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

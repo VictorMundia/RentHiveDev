@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Delete Property{% endblock %}
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
-    <h2 class="mb-4">Delete Property</h2>
-    <div class="alert alert-danger">
-        <strong>Are you sure you want to delete the property "{{ property.name }}"?</strong>
-        <p>This action cannot be undone. All units and related data will be deleted.</p>
+<div class="flex flex-col items-center justify-center min-h-[60vh] py-8">
+  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+    <h2 class="text-2xl font-bold text-black mb-6 text-center">Delete Property</h2>
+    <div class="bg-red-100 text-red-700 rounded p-4 mb-4">
+      <strong>Are you sure you want to delete the property "{{ property.name }}"?</strong>
+      <p>This action cannot be undone. All units and related data will be deleted.</p>
     </div>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
-        <a href="{% url 'properties:property_list' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      <button type="submit" class="w-full bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700 transition">Yes, Delete</button>
+      <a href="{% url 'properties:property_list' %}" class="w-full inline-block text-center border border-gray-700 text-gray-700 font-semibold rounded py-2 hover:bg-gray-100 transition">Cancel</a>
     </form>
+  </div>
 </div>
 {% endblock %}

@@ -100,7 +100,12 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            # Save extra fields
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.save()
+            # Save ID number to user profile (if you want to store it elsewhere, adjust accordingly)
             # If this is a tenant registering via invite, assign them to the unit and create a lease
             if invited_unit and form.cleaned_data.get('user_type') == 'tenant':
                 invited_unit.status = 'occupied'
@@ -114,7 +119,13 @@ def register(request):
                     is_active=True
                 )
             login(request, user)
-            return redirect('users:tenant_profile')
+            # Show welcome message with property name
+            if invited_unit:
+                request.session['welcome_property'] = invited_unit.property.name
+            if user.user_type == 'owner':
+                return redirect('users:profile')
+            else:
+                return redirect('users:tenant_profile')
     else:
         form = RegisterForm()
     # Only show errors if the form was submitted (POST)

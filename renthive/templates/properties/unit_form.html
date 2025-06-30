@@ -1,15 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}Add Unit{% endblock %}
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
-    <h2 class="mb-4">Add Unit to {{ property.name }}</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success w-100">Add Unit</button>
+<div class="flex flex-col items-center justify-center min-h-[60vh] py-8">
+  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+    <h2 class="text-2xl font-bold text-black mb-6 text-center">Add Unit to {{ property.name }}</h2>
+    {% if form.errors %}
+      <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
+        Please correct the error{{ form.errors|length|pluralize }} below.
+      </div>
+    {% endif %}
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="w-full bg-primary text-black font-semibold py-2 rounded hover:bg-black hover:text-primary transition">Add Unit</button>
     </form>
-    <div class="mt-3">
-        <a href="{% url 'properties:property_detail' property.pk %}">Back to Property</a>
+    <div class="mt-6 text-center text-sm text-gray-600">
+      <a href="{% url 'properties:property_detail' property.pk %}" class="text-primary font-semibold hover:underline">Back to Property</a>
     </div>
+  </div>
 </div>
 {% endblock %}
