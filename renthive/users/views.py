@@ -9,6 +9,10 @@ from django.utils import timezone
 from django.db import models
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+from payments.mpesa import stk_push
 
 @login_required
 def dashboard(request):
@@ -147,13 +151,25 @@ def tenant_profile(request):
     payment_success = False
     if request.method == 'POST' and 'pay_rent' in request.POST:
         amount = request.POST.get('amount')
+        payment_method = request.POST.get('payment_method')
+        transaction_code = request.POST.get('transaction_code')
         try:
             amount = float(amount)
             if amount > 0 and lease:
+                if payment_method == 'mpesa':
+                    # Initiate Mpesa STK Push
+                    callback_url = request.build_absolute_uri('/users/mpesa/callback/')
+                    phone_number = user.phone_number
+                    account_reference = f"Unit{unit.unit_number}"
+                    transaction_desc = f"Rent payment for {unit.property.name}"
+                    mpesa_response = stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
+                    transaction_code = mpesa_response.get('CheckoutRequestID', '')
                 payment = Payment.objects.create(
                     lease=lease,
                     amount=amount,
                     payment_date=timezone.now(),
+                    payment_method=payment_method,
+                    transaction_code=transaction_code,
                     is_confirmed=False  # Owner can confirm later
                 )
                 # Send receipt email
@@ -175,3 +191,12 @@ def tenant_profile(request):
         'rent_balance': rent_balance,
         'payment_success': payment_success,
     })
+
+@csrf_exempt
+def mpesa_callback(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        # You can log or process the callback data here
+        # For now, just return a success response
+        return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+    return JsonResponse({"error": "Invalid request"}, status=400)

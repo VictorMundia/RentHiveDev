@@ -8,7 +8,6 @@
         Welcome to {{ request.session.welcome_property }}! Your profile is set up. Explore your dashboard below.
       </div>
     </div>
-    {# Remove welcome message after displaying (handled in view, not template) #}
   {% endif %}
   <h2 class="text-3xl font-extrabold text-black mb-2 text-center">Tenant Dashboard</h2>
   <div class="w-full max-w-2xl mb-8">
@@ -26,10 +25,16 @@
         <h3 class="text-xl font-bold text-black mb-2">Rent Due</h3>
         <div class="flex items-center gap-4 mb-2">
           <span class="text-3xl font-extrabold text-primary">${{ rent_balance }}</span>
-          <form method="post" class="flex gap-2 items-end">
+          <form method="post" class="flex flex-col md:flex-row gap-2 items-end">
             {% csrf_token %}
             <input type="hidden" name="pay_rent" value="1">
             <input type="number" step="0.01" min="1" max="{{ rent_balance }}" name="amount" id="amount" class="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required placeholder="Amount">
+            <select name="payment_method" class="w-40 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required>
+              <option value="" disabled selected>Select Payment Method</option>
+              <option value="mpesa">M-Pesa</option>
+              <option value="bank">Bank Transfer</option>
+              <option value="card">Card Transaction</option>
+            </select>
             <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Pay Rent</button>
           </form>
         </div>
@@ -43,7 +48,7 @@
           <ul class="list-disc pl-5 text-gray-700 space-y-1">
             {% for payment in payments %}
               <li>
-                ${{ payment.amount }} - {{ payment.payment_date }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}
+                ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}
               </li>
             {% endfor %}
           </ul>

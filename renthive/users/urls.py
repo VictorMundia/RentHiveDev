@@ -8,4 +8,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('register/', views.register, name='register'),
     path('tenant/profile/', views.tenant_profile, name='tenant_profile'),
+    path('mpesa/callback/', views.mpesa_callback, name='mpesa_callback'),
 ]

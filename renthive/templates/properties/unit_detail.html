@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Unit Details{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto py-10">
+  <h2 class="text-2xl font-bold text-black mb-4">Unit {{ unit.unit_number }} Details</h2>
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
+    <h3 class="text-lg font-bold text-black mb-2">Tenant Information</h3>
+    {% if tenant %}
+      <p><strong>Name:</strong> {{ tenant.get_full_name }}</p>
+      <p><strong>Email:</strong> {{ tenant.email }}</p>
+      <p><strong>Phone:</strong> {{ tenant.phone_number }}</p>
+      <p><strong>Username:</strong> {{ tenant.username }}</p>
+    {% else %}
+      <p class="text-gray-700">No tenant assigned to this unit.</p>
+    {% endif %}
+  </div>
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
+    <h3 class="text-lg font-bold text-black mb-2">Lease & Rent</h3>
+    {% if lease %}
+      <p><strong>Start Date:</strong> {{ lease.start_date }}</p>
+      <p><strong>End Date:</strong> {{ lease.end_date }}</p>
+      <p><strong>Rent Amount:</strong> ${{ lease.rent_amount }}</p>
+      <p><strong>Status:</strong> {% if lease.is_active %}Active{% else %}Inactive{% endif %}</p>
+      <p><strong>Rent Balance:</strong> ${{ rent_balance }}</p>
+    {% else %}
+      <p class="text-gray-700">No active lease for this unit.</p>
+    {% endif %}
+  </div>
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
+    <h3 class="text-lg font-bold text-black mb-2">Payment History</h3>
+    {% if payments %}
+      <ul class="list-disc pl-5 text-gray-700 space-y-1">
+        {% for payment in payments %}
+          <li>
+            ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-700">No payments yet.</p>
+    {% endif %}
+  </div>
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
+    <h3 class="text-lg font-bold text-black mb-2">Maintenance Requests</h3>
+    {% if maintenance_requests %}
+      <ul class="list-disc pl-5 text-gray-700 space-y-1">
+        {% for req in maintenance_requests %}
+          <li>
+            {{ req.description }} - {{ req.status|title }} ({{ req.created_at }})
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-700">No maintenance requests yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

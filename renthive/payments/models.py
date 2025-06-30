@@ -7,6 +7,7 @@ class Payment(models.Model):
         ('mpesa', 'M-Pesa'),
         ('cash', 'Cash'),
         ('bank', 'Bank Transfer'),
+        ('card', 'Card Transaction'),
     ]
     
     lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='payments')

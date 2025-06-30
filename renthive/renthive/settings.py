@@ -154,3 +154,10 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'renthiveproperties@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'ttdw uajk ejrb vgyk')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+
+# Mpesa Daraja API credentials (replace with your actual values or set in .env)
+MPESA_CONSUMER_KEY = os.getenv('MPESA_CONSUMER_KEY', 'XJpdWu6QEto0BRAsNFYmAmWi80uDK8tPQzhC0ymA7bzIeA2k')
+MPESA_CONSUMER_SECRET = os.getenv('MPESA_CONSUMER_SECRET', 'gUKzdAEN0AnzQtvanpHChcLuFuO3hZsOSwc0jv4xcRmAm3hDJq7ph7INjF9cCHDf')
+MPESA_SHORTCODE = os.getenv('MPESA_SHORTCODE', '174379')
+MPESA_PASSKEY = os.getenv('MPESA_PASSKEY', 'your_passkey')
+MPESA_ENV = os.getenv('MPESA_ENV', 'sandbox')  # or 'production'

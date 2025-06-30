@@ -33,13 +33,17 @@
           <span class="text-xl font-bold text-white">RentHive</span>
         </a>
         <div class="space-x-4 flex items-center">
-          <a href="/" class="text-white hover:text-primary">Home</a>
-          <a href="/properties/" class="text-white hover:text-primary">Properties</a>
-          <a href="/users/dashboard/" class="text-white hover:text-primary">Dashboard</a>
-          <a href="/maintenance/" class="text-white hover:text-primary">Maintenance</a>
-          <a href="/payments/owner/" class="text-white hover:text-primary">Payments</a>
-          <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>
-          <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>
+          {% if user.is_authenticated and user.user_type == 'tenant' %}
+            <a href="/" class="text-white hover:text-primary">Home</a>
+            <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">My Profile</a>
+            <a href="/accounts/logout/" class="text-white hover:text-primary">Logout</a>
+          {% else %}
+            <a href="/" class="text-white hover:text-primary">Home</a>
+            <a href="/properties/" class="text-white hover:text-primary">Properties</a>
+            <a href="/users/dashboard/" class="text-white hover:text-primary">Dashboard</a>
+            <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>
+            <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>
+          {% endif %}
         </div>
       </div>
     </nav>

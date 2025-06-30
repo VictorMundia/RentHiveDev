@@ -192,3 +192,23 @@ def add_unit(request, property_pk):
     else:
         form = UnitForm()
     return render(request, 'properties/unit_form.html', {'form': form, 'property': property})
+
+@login_required
+def unit_detail(request, unit_id):
+    unit = get_object_or_404(Unit, pk=unit_id, property__owner=request.user)
+    lease = unit.leases.filter(is_active=True).first()
+    tenant = lease.tenant if lease else None
+    payments = Payment.objects.filter(lease=lease).order_by('-payment_date') if lease else []
+    maintenance_requests = MaintenanceRequest.objects.filter(unit=unit).order_by('-created_at')
+    rent_balance = 0
+    if lease:
+        total_paid = payments.filter(is_confirmed=True).aggregate(total=Sum('amount'))['total'] or 0
+        rent_balance = lease.rent_amount - total_paid
+    return render(request, 'properties/unit_detail.html', {
+        'unit': unit,
+        'tenant': tenant,
+        'lease': lease,
+        'payments': payments,
+        'maintenance_requests': maintenance_requests,
+        'rent_balance': rent_balance,
+    })
