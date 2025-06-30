@@ -99,6 +99,7 @@
       <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
         <h3 class="text-xl font-bold text-black mb-2">Maintenance Requests</h3>
         <a href="{% url 'maintenance:create_request' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition mb-2 inline-block">Submit Maintenance Request</a>
+        <a href="{% url 'maintenance:tenant_requests_list' %}" class="ml-3 bg-yellow-500 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-600 transition mb-2 inline-block">View All My Requests</a>
         {% if maintenance_requests %}
           <ul class="list-disc pl-5 text-gray-700 space-y-1">
             {% for req in maintenance_requests %}

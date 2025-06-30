@@ -14,26 +14,20 @@ def create_request(request):
     user = request.user
     lease = Lease.objects.filter(tenant=user, is_active=True).first()
     unit = lease.unit if lease else None
-    # Get all units tenant is associated with (via lease, past or present)
-    tenant_units = Unit.objects.filter(leases__tenant=user).distinct()
     if request.method == 'POST':
         form = MaintenanceRequestForm(request.POST)
-        form.fields['unit'].queryset = tenant_units
         if form.is_valid():
             req = form.save(commit=False)
-            # Use selected unit if no active lease
             if not unit:
-                unit = form.cleaned_data['unit']
-            req.unit = unit
-            req.requested_by = user
-            req.save()
-            # Notify owner (reuse notification/email logic if desired)
-            return render(request, 'maintenance/request_submitted.html', {'request_obj': req})
+                form.add_error(None, 'No active lease/unit found. Please contact your property owner.')
+            else:
+                req.unit = unit
+                req.requested_by = user
+                req.save()
+                # Redirect to tenant requests list after submission
+                return redirect('maintenance:tenant_requests_list')
     else:
         form = MaintenanceRequestForm()
-        form.fields['unit'].queryset = tenant_units
-        if unit:
-            form.fields['unit'].initial = unit
     return render(request, 'maintenance/create_request.html', {'form': form})
 
 @login_required
@@ -138,3 +132,8 @@ def confirm_maintenance_resolution(request, req_id):
         req.save()
         return render(request, 'maintenance/confirmation_thankyou.html', {'request_obj': req})
     return render(request, 'maintenance/confirm_resolution.html', {'request_obj': req})
+
+@login_required
+def tenant_requests_list(request):
+    requests = MaintenanceRequest.objects.filter(requested_by=request.user).order_by('-created_at')
+    return render(request, 'maintenance/tenant_requests_list.html', {'requests': requests})

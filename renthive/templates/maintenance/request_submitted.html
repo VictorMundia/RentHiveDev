@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-16 p-8 bg-white rounded shadow text-center">
+    <h1 class="text-2xl font-bold text-yellow-500 mb-4">Request Submitted!</h1>
+    <p class="mb-6 text-gray-700">Your maintenance request has been submitted. The property owner will be notified and you can track the status of your request at any time.</p>
+    <div class="flex flex-col gap-4 items-center">
+        <a href="{% url 'maintenance:tenant_requests_list' %}" class="bg-yellow-500 text-black px-5 py-2 rounded font-semibold hover:bg-yellow-600 transition">View My Maintenance Requests</a>
+        <a href="{% url 'users:tenant_profile' %}" class="text-gray-600 hover:underline">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

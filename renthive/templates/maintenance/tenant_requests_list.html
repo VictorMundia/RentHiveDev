@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
+    <h1 class="text-2xl font-bold mb-6 text-yellow-500">My Maintenance Requests</h1>
+    {% if requests %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Unit</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Issue</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Priority</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Last Updated</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Feedback</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for req in requests %}
+                    <tr>
+                        <td class="px-4 py-2">{{ req.unit }}</td>
+                        <td class="px-4 py-2">{{ req.issue|truncatechars:40 }}</td>
+                        <td class="px-4 py-2">{{ req.get_priority_display }}</td>
+                        <td class="px-4 py-2">
+                            <span class="inline-block px-2 py-1 rounded text-xs font-semibold {% if req.status == 'completed' %}bg-green-100 text-green-800{% elif req.status == 'in_progress' %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ req.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2">{{ req.created_at|date:"M d, Y H:i" }}</td>
+                        <td class="px-4 py-2">{{ req.updated_at|date:"M d, Y H:i" }}</td>
+                        <td class="px-4 py-2">
+                            {% if req.tenant_confirmed %}
+                                <span class="text-green-600 font-semibold">Confirmed</span>
+                                {% if req.feedback_rating %}<br>Rating: {{ req.feedback_rating }}/5{% endif %}
+                            {% elif req.status == 'completed' %}
+                                <a href="{% url 'maintenance:confirm_resolution' req.id %}" class="text-yellow-600 hover:underline">Confirm/Feedback</a>
+                            {% else %}
+                                <span class="text-gray-500">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-gray-600">You have not submitted any maintenance requests yet.</p>
+    {% endif %}
+    <div class="mt-6">
+        <a href="{% url 'maintenance:create_request' %}" class="inline-block bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 font-semibold">Submit New Request</a>
+    </div>
+</div>
+{% endblock %}
