@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Bank Transfer{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] py-10">
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-8 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-black mb-4 text-center">Bank Transfer</h2>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="pay_rent" value="1">
+      <input type="hidden" name="amount" value="{{ amount }}">
+      <input type="hidden" name="payment_method" value="bank">
+      <label class="block text-gray-700 font-semibold">Bank Name</label>
+      <input type="text" name="bank_name" required placeholder="e.g. Equity Bank" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50">
+      <label class="block text-gray-700 font-semibold">Account Number</label>
+      <input type="text" name="account_number" required maxlength="20" pattern="[0-9]{6,20}" placeholder="Account Number" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50">
+      <label class="block text-gray-700 font-semibold">Transaction Reference</label>
+      <input type="text" name="transaction_reference" required maxlength="30" placeholder="e.g. Bank slip or reference code" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50">
+      <button type="submit" class="w-full bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Submit Bank Transfer</button>
+    </form>
+    <a href="{% url 'users:tenant_profile' %}" class="block text-center text-primary mt-4 hover:underline">Back to Profile</a>
+  </div>
+</div>
+{% endblock %}

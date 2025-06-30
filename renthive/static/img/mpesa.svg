@@ -1,0 +1,5 @@
+<!-- Mpesa SVG icon placeholder. Replace with actual SVG if needed. -->
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="8" fill="#43B02A"/>
+  <text x="16" y="21" text-anchor="middle" fill="white" font-size="14" font-family="Arial">M</text>
+</svg>

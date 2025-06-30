@@ -25,6 +25,10 @@ class MaintenanceRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
     resolved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_requests')
+    assigned_to = models.CharField(max_length=100, blank=True, null=True, help_text='Contractor or person assigned')
+    tenant_confirmed = models.BooleanField(default=False)
+    tenant_feedback = models.TextField(blank=True, null=True)
+    feedback_rating = models.PositiveSmallIntegerField(blank=True, null=True, help_text='1-5 stars')
     
     def __str__(self):
         return f"Maintenance for {self.unit} - {self.get_status_display()}"

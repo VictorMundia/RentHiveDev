@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Tenant Dashboard{% endblock %}
 {% block content %}
 <div class="flex flex-col items-center justify-center min-h-[70vh] py-10">
@@ -29,14 +30,53 @@
             {% csrf_token %}
             <input type="hidden" name="pay_rent" value="1">
             <input type="number" step="0.01" min="1" max="{{ rent_balance }}" name="amount" id="amount" class="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required placeholder="Amount">
-            <select name="payment_method" class="w-40 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required>
-              <option value="" disabled selected>Select Payment Method</option>
-              <option value="mpesa">M-Pesa</option>
-              <option value="bank">Bank Transfer</option>
-              <option value="card">Card Transaction</option>
-            </select>
+            <div class="flex gap-3 items-center" id="payment-method-icons">
+              <label class="flex flex-col items-center cursor-pointer">
+                <input type="radio" name="payment_method" value="mpesa" class="sr-only payment-method-radio" required id="mpesa-radio">
+                <img src="{% static 'img/mpesa.svg' %}" alt="Mpesa" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>
+                <span class="text-xs text-gray-700">M-Pesa</span>
+              </label>
+              <label class="flex flex-col items-center cursor-pointer">
+                <input type="radio" name="payment_method" value="bank" class="sr-only payment-method-radio" required>
+                <img src="{% static 'img/bank.svg' %}" alt="Bank" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>
+                <span class="text-xs text-gray-700">Bank</span>
+              </label>
+              <label class="flex flex-col items-center cursor-pointer">
+                <input type="radio" name="payment_method" value="card" class="sr-only payment-method-radio" required>
+                <img src="{% static 'img/card.svg' %}" alt="Card" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>
+                <span class="text-xs text-gray-700">Card</span>
+              </label>
+            </div>
             <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Pay Rent</button>
           </form>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const mpesaRadio = document.getElementById('mpesa-radio');
+              const form = mpesaRadio.closest('form');
+              mpesaRadio.addEventListener('change', function() {
+                if (mpesaRadio.checked) {
+                  const amount = form.querySelector('input[name="amount"]').value;
+                  window.location.href = "{% url 'users:lipa_na_mpesa' %}?amount=" + encodeURIComponent(amount);
+                }
+              });
+              // Card redirect
+              const cardRadio = form.querySelector('input[value="card"]');
+              cardRadio.addEventListener('change', function() {
+                if (cardRadio.checked) {
+                  const amount = form.querySelector('input[name="amount"]').value;
+                  window.location.href = "{% url 'users:card_payment' %}?amount=" + encodeURIComponent(amount);
+                }
+              });
+              // Bank redirect
+              const bankRadio = form.querySelector('input[value="bank"]');
+              bankRadio.addEventListener('change', function() {
+                if (bankRadio.checked) {
+                  const amount = form.querySelector('input[name="amount"]').value;
+                  window.location.href = "{% url 'users:bank_transfer' %}?amount=" + encodeURIComponent(amount);
+                }
+              });
+            });
+          </script>
         </div>
         {% if payment_success %}
           <div class="mt-2 p-2 bg-green-100 text-green-700 rounded">Payment received! A receipt has been sent to your email.</div>
@@ -58,12 +98,15 @@
       </div>
       <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
         <h3 class="text-xl font-bold text-black mb-2">Maintenance Requests</h3>
-        <a href="{% url 'maintenance:chat' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition mb-2 inline-block">Submit Maintenance Request</a>
+        <a href="{% url 'maintenance:create_request' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition mb-2 inline-block">Submit Maintenance Request</a>
         {% if maintenance_requests %}
           <ul class="list-disc pl-5 text-gray-700 space-y-1">
             {% for req in maintenance_requests %}
               <li>
-                {{ req.description }} - {{ req.status|title }} ({{ req.created_at }})
+                {{ req.issue }} - {{ req.status|title }} ({{ req.created_at }})
+                {% if req.status == 'completed' and not req.tenant_confirmed %}
+                  <a href="{% url 'maintenance:confirm_resolution' req.id %}" class="ml-2 text-primary underline font-semibold">Confirm Resolution</a>
+                {% endif %}
               </li>
             {% endfor %}
           </ul>

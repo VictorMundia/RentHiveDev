@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Lipa na M-Pesa{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] py-10">
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-8 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-black mb-4 text-center">Lipa na M-Pesa</h2>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="pay_rent" value="1">
+      <input type="hidden" name="amount" value="{{ amount }}">
+      <input type="hidden" name="payment_method" value="mpesa">
+      <label class="block text-gray-700 font-semibold">Phone Number</label>
+      <input type="tel" name="mpesa_phone" required pattern="^\+?254[0-9]{9}$" placeholder="e.g. 2547XXXXXXXX" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50">
+      <button type="submit" class="w-full bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Pay with M-Pesa</button>
+    </form>
+    <a href="{% url 'users:tenant_profile' %}" class="block text-center text-primary mt-4 hover:underline">Back to Profile</a>
+  </div>
+</div>
+{% endblock %}

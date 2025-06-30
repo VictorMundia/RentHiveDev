@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.urls import reverse
 import json
 from payments.mpesa import stk_push
 
@@ -45,10 +46,14 @@ def dashboard(request):
             status='pending'
         ).order_by('-created_at')[:5]
         
+        # In-app notifications
+        from users.models import Notification
+        notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
         context.update({
             'properties': properties,
             'pending_payments': pending_payments,
             'pending_requests': pending_requests,
+            'notifications': notifications,
         })
     
     return render(request, 'users/dashboard.html', context)
@@ -191,6 +196,106 @@ def tenant_profile(request):
         'rent_balance': rent_balance,
         'payment_success': payment_success,
     })
+
+def lipa_na_mpesa(request):
+    user = request.user
+    lease = Lease.objects.filter(tenant=user, is_active=True).first()
+    unit = lease.unit if lease else None
+    amount = request.POST.get('amount') or request.GET.get('amount')
+    if request.method == 'POST' and 'pay_rent' in request.POST:
+        phone_number = request.POST.get('mpesa_phone')
+        if lease and amount and phone_number:
+            try:
+                amount = float(amount)
+                callback_url = request.build_absolute_uri('/users/mpesa/callback/')
+                account_reference = f"Unit{unit.unit_number}"
+                transaction_desc = f"Rent payment for {unit.property.name}"
+                mpesa_response = stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
+                transaction_code = mpesa_response.get('CheckoutRequestID', '')
+                Payment.objects.create(
+                    lease=lease,
+                    amount=amount,
+                    payment_date=timezone.now(),
+                    payment_method='mpesa',
+                    transaction_code=transaction_code,
+                    is_confirmed=False
+                )
+                send_mail(
+                    subject="Rent Payment Receipt",
+                    message=f"Thank you for your payment of ${amount} for unit {unit.unit_number} at {unit.property.name}.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+                return redirect('users:tenant_profile')
+            except Exception:
+                pass
+    return render(request, 'payments/lipa_na_mpesa.html', {'amount': amount})
+
+def card_payment(request):
+    user = request.user
+    lease = Lease.objects.filter(tenant=user, is_active=True).first()
+    unit = lease.unit if lease else None
+    amount = request.POST.get('amount') or request.GET.get('amount')
+    if request.method == 'POST' and 'pay_rent' in request.POST:
+        card_number = request.POST.get('card_number')
+        expiry = request.POST.get('expiry')
+        cvv = request.POST.get('cvv')
+        if lease and amount and card_number and expiry and cvv:
+            try:
+                amount = float(amount)
+                # Here you would integrate with a real card processor
+                Payment.objects.create(
+                    lease=lease,
+                    amount=amount,
+                    payment_date=timezone.now(),
+                    payment_method='card',
+                    transaction_code=card_number[-4:],  # Store last 4 digits for reference
+                    is_confirmed=True  # Simulate instant confirmation
+                )
+                send_mail(
+                    subject="Rent Payment Receipt",
+                    message=f"Thank you for your card payment of ${amount} for unit {unit.unit_number} at {unit.property.name}.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+                return redirect('users:tenant_profile')
+            except Exception:
+                pass
+    return render(request, 'payments/card_payment.html', {'amount': amount})
+
+def bank_transfer(request):
+    user = request.user
+    lease = Lease.objects.filter(tenant=user, is_active=True).first()
+    unit = lease.unit if lease else None
+    amount = request.POST.get('amount') or request.GET.get('amount')
+    if request.method == 'POST' and 'pay_rent' in request.POST:
+        bank_name = request.POST.get('bank_name')
+        account_number = request.POST.get('account_number')
+        transaction_reference = request.POST.get('transaction_reference')
+        if lease and amount and bank_name and account_number and transaction_reference:
+            try:
+                amount = float(amount)
+                Payment.objects.create(
+                    lease=lease,
+                    amount=amount,
+                    payment_date=timezone.now(),
+                    payment_method='bank',
+                    transaction_code=transaction_reference,
+                    is_confirmed=True  # Simulate instant confirmation
+                )
+                send_mail(
+                    subject="Rent Payment Receipt",
+                    message=f"Thank you for your bank transfer of ${amount} for unit {unit.unit_number} at {unit.property.name}.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+                return redirect('users:tenant_profile')
+            except Exception:
+                pass
+    return render(request, 'payments/bank_transfer.html', {'amount': amount})
 
 @csrf_exempt
 def mpesa_callback(request):

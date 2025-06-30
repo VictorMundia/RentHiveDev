@@ -8,4 +8,6 @@ urlpatterns = [
     path('chat/', views.maintenance_chat, name='chat'),
     path('owner/chats/', views.owner_maintenance_chats, name='owner_chats'),
     path('owner/chat/<int:chat_id>/', views.owner_maintenance_chat_detail, name='owner_chat_detail'),
+    path('owner/requests/', views.owner_requests_dashboard, name='owner_requests_dashboard'),
+    path('confirm/<int:req_id>/', views.confirm_maintenance_resolution, name='confirm_resolution'),
 ]

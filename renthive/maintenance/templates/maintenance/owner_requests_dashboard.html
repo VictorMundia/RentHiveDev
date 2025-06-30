@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Maintenance Requests{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto py-8">
+  <h2 class="text-2xl font-bold mb-6">All Maintenance Requests</h2>
+  <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="px-4 py-2">Unit</th>
+        <th class="px-4 py-2">Issue</th>
+        <th class="px-4 py-2">Priority</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2">Assigned To</th>
+        <th class="px-4 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in requests %}
+      <tr class="border-t">
+        <td class="px-4 py-2">{{ req.unit.property.name }} - {{ req.unit.unit_number }}</td>
+        <td class="px-4 py-2">{{ req.issue|truncatechars:40 }}</td>
+        <td class="px-4 py-2">{{ req.get_priority_display }}</td>
+        <td class="px-4 py-2">{{ req.get_status_display }}</td>
+        <td class="px-4 py-2">{{ req.assigned_to|default:'-' }}</td>
+        <td class="px-4 py-2">
+          <form method="post" class="inline">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ req.id }}">
+            <select name="status" class="border rounded px-2 py-1">
+              <option value="pending" {% if req.status == 'pending' %}selected{% endif %}>Pending</option>
+              <option value="in_progress" {% if req.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+              <option value="completed" {% if req.status == 'completed' %}selected{% endif %}>Completed</option>
+            </select>
+            <button type="submit" name="action" value="update_status" class="ml-2 bg-primary text-black px-2 py-1 rounded">Update</button>
+          </form>
+          <form method="post" class="inline ml-2">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ req.id }}">
+            <input type="text" name="assigned_to" placeholder="Assign to..." value="{{ req.assigned_to }}" class="border rounded px-2 py-1 w-24">
+            <button type="submit" name="action" value="assign" class="ml-1 bg-primary text-black px-2 py-1 rounded">Assign</button>
+          </form>
+          <form method="post" class="inline ml-2">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ req.id }}">
+            <button type="submit" name="action" value="mark_resolved" class="bg-green-500 text-white px-2 py-1 rounded">Mark Resolved</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center py-4 text-gray-500">No requests found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

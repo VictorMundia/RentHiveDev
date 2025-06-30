@@ -36,7 +36,7 @@
           {% if user.is_authenticated and user.user_type == 'tenant' %}
             <a href="/" class="text-white hover:text-primary">Home</a>
             <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">My Profile</a>
-            <a href="/accounts/logout/" class="text-white hover:text-primary">Logout</a>
+            <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>
           {% else %}
             <a href="/" class="text-white hover:text-primary">Home</a>
             <a href="/properties/" class="text-white hover:text-primary">Properties</a>
