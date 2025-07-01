@@ -31,7 +31,7 @@
     <nav class="bg-black shadow mb-8">
       <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
         <a href="/" class="flex items-center space-x-2">
-          <img src="{% static 'img/logo.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />
+          <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />
           <span class="text-xl font-bold text-white">RentHive</span>
         </a>
         <div class="space-x-4">
@@ -43,104 +43,61 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="py-20 text-center bg-gray-100">
-      <div class="container mx-auto px-4">
-        <h1 class="text-4xl font-bold sm:text-5xl md:text-6xl">
-          Manage Your Rentals, <span class="text-yellow-500">Seamlessly</span>.
-        </h1>
-        <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-700 sm:text-xl md:text-2xl">
-          RentHive simplifies rental management for small property owners in Kenya.
-        </p>
-        <div class="mt-10 flex justify-center gap-4">
-          <a href="/users/register/" class="bg-primary text-black font-bold px-8 py-3 rounded-lg shadow hover:bg-black hover:text-primary transition text-lg">Get Started</a>
-          <a href="#features" class="px-6 py-3 border rounded-lg text-lg">Learn More</a>
+    <div class="min-h-[80vh] flex flex-col justify-center items-center bg-gradient-to-br from-yellow-100 via-white to-gray-100 py-16">
+      <div class="text-center mb-10">
+        <img src="{% static 'img/renthivebg2.png' %}" alt="RentHive Logo" class="mx-auto h-32 w-32 mb-4 drop-shadow-lg" />
+        <h1 class="text-5xl font-extrabold text-black mb-2 tracking-tight">Welcome to <span class="text-yellow-500">RentHive</span></h1>
+        <p class="text-lg text-gray-700 max-w-xl mx-auto mb-6">Modern property management for tenants and owners. Seamless payments, maintenance, and communication—all in one place.</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-6">
+          <a href="{% url 'users:register' %}" class="bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold shadow hover:bg-yellow-600 transition flex items-center gap-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Get Started
+          </a>
+          <a href="{% url 'login' %}" class="bg-black text-yellow-400 px-6 py-3 rounded-lg font-bold shadow hover:bg-gray-900 transition flex items-center gap-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Login
+          </a>
         </div>
       </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="py-20">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold sm:text-4xl md:text-5xl">
-            Why Choose <span class="text-yellow-500">RentHive</span>?
-          </h2>
-          <p class="mt-4 max-w-xl mx-auto text-lg text-gray-700">
-            Everything you need to manage your properties efficiently.
-          </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10 max-w-5xl w-full">
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">
+          <img src="{% static 'img/mpesa.svg' %}" alt="Mpesa" class="h-12 w-12 mb-3" />
+          <h3 class="text-xl font-bold text-black mb-2">Easy Payments</h3>
+          <p class="text-gray-600">Pay rent via Mpesa, card, or bank. Fast, secure, and convenient for everyone.</p>
         </div>
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div class="p-6 border rounded-lg shadow-sm hover:shadow-lg transition">
-            <div class="flex items-center justify-center mb-4 h-16 w-16 rounded-lg bg-yellow-100 text-yellow-600">
-              <i class="ph ph-calendar-check text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold mb-2">Rent Reminders</h3>
-            <p class="text-gray-700">Automated reminders for on-time rent payments.</p>
-          </div>
-          <div class="p-6 border rounded-lg shadow-sm hover:shadow-lg transition">
-            <div class="flex items-center justify-center mb-4 h-16 w-16 rounded-lg bg-yellow-100 text-yellow-600">
-              <i class="ph ph-tools text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold mb-2">Maintenance Requests</h3>
-            <p class="text-gray-700">Track and resolve issues easily with tenants.</p>
-          </div>
-          <div class="p-6 border rounded-lg shadow-sm hover:shadow-lg transition">
-            <div class="flex items-center justify-center mb-4 h-16 w-16 rounded-lg bg-yellow-100 text-yellow-600">
-              <i class="ph ph-chat-circle-dots text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold mb-2">Easy Communication</h3>
-            <p class="text-gray-700">In-app and WhatsApp messaging with tenants.</p>
-          </div>
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">
+          <svg class="h-12 w-12 mb-3 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4"/></svg>
+          <h3 class="text-xl font-bold text-black mb-2">Maintenance Requests</h3>
+          <p class="text-gray-600">Submit, track, and resolve maintenance issues with real-time updates and feedback.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">
+          <svg class="h-12 w-12 mb-3 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 3v4a1 1 0 001 1h4"/></svg>
+          <h3 class="text-xl font-bold text-black mb-2">Owner Dashboard</h3>
+          <p class="text-gray-600">Manage properties, view tenants, and monitor all activity from a single dashboard.</p>
         </div>
       </div>
-    </section>
-
-    <!-- Benefits Section -->
-    <section id="benefits" class="py-20 bg-gray-100">
-      <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold sm:text-4xl md:text-5xl">
-          Benefits for <span class="text-yellow-500">Everyone</span>
-        </h2>
-        <p class="mt-4 max-w-xl mx-auto text-lg text-gray-700 mb-12">
-          Designed to make life easier for owners and tenants.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-          <div class="p-6 border rounded-lg shadow-sm bg-white">
-            <h3 class="text-xl font-semibold mb-2 text-yellow-500">For Property Owners</h3>
-            <ul class="list-disc list-inside space-y-1 text-gray-700">
-              <li>Save time with automation</li>
-              <li>Better tenant relationships</li>
-              <li>Track finances easily</li>
-              <li>Reduce vacancies</li>
-            </ul>
+      <div class="mt-16 text-center">
+        <h2 class="text-2xl font-bold mb-2 text-black">Why RentHive?</h2>
+        <div class="flex flex-wrap justify-center gap-6 mt-4">
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="font-semibold text-black">Secure & Reliable</span>
           </div>
-          <div class="p-6 border rounded-lg shadow-sm bg-white">
-            <h3 class="text-xl font-semibold mb-2 text-yellow-500">For Tenants</h3>
-            <ul class="list-disc list-inside space-y-1 text-gray-700">
-              <li>Pay rent on time</li>
-              <li>Easy maintenance reports</li>
-              <li>Clear communication</li>
-              <li>Access to documents</li>
-            </ul>
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"/></svg>
+            <span class="font-semibold text-black">Transparent Communication</span>
+          </div>
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>
+            <span class="font-semibold text-black">Real-Time Updates</span>
+          </div>
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+            <span class="font-semibold text-black">Easy to Use</span>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="py-20">
-      <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold sm:text-4xl md:text-5xl">
-          Ready to <span class="text-yellow-500">Simplify</span> Your Rentals?
-        </h2>
-        <p class="mt-4 max-w-xl mx-auto text-lg text-gray-700">
-          Join RentHive and experience modern property management.
-        </p>
-        <div class="mt-10">
-            <a href="/users/register/" class="px-6 py-3 bg-black text-white rounded-lg text-lg">Sign Up Now - It's Free!</a>
-        </div>
-      </div>
-    </section>
+    </div>
 
     <!-- Footer -->
     <footer class="py-8 border-t text-center text-gray-700 bg-gray-100 mt-8">
