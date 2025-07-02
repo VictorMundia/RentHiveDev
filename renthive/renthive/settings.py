@@ -9,87 +9,86 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import os
-from dotenv import load_dotenv
+import os  # Import the os module for interacting with the operating system
+from dotenv import load_dotenv  # Import load_dotenv to load environment variables from a .env file
 
-load_dotenv()
+load_dotenv()  # Load environment variables from .env file
 
-from pathlib import Path
+from pathlib import Path  # Import Path for handling filesystem paths
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent  # Set BASE_DIR to the root directory of the project
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8v$y2^!c42&a81)4rgt!nalp!s#ct=rq-_k%n01^_5_%76es#4'
+SECRET_KEY = 'django-insecure-8v$y2^!c42&a81)4rgt!nalp!s#ct=rq-_k%n01^_5_%76es#4'  # Secret key for Django project
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # Enable debug mode (should be False in production)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # List of allowed hosts (empty means only localhost)
 
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'properties',
-    'payments',
-    'maintenance',
-    'users',
-    'crispy_forms',
-
+INSTALLED_APPS = [  # List of installed Django apps
+    'django.contrib.admin',  # Django admin app
+    'django.contrib.auth',  # Django authentication app
+    'django.contrib.contenttypes',  # Django content types framework
+    'django.contrib.sessions',  # Django session framework
+    'django.contrib.messages',  # Django messaging framework
+    'django.contrib.staticfiles',  # Django static files app
+    'properties',  # Custom app for property management
+    'payments',  # Custom app for payments
+    'maintenance',  # Custom app for maintenance
+    'users',  # Custom app for user management
+    'crispy_forms',  # Third-party app for better form rendering
 ]
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+MIDDLEWARE = [  # List of middleware classes
+    'django.middleware.security.SecurityMiddleware',  # Security middleware
+    'django.contrib.sessions.middleware.SessionMiddleware',  # Session middleware
+    'django.middleware.common.CommonMiddleware',  # Common middleware
+    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF protection middleware
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Authentication middleware
+    'django.contrib.messages.middleware.MessageMiddleware',  # Messaging middleware
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Clickjacking protection middleware
 ]
 
-ROOT_URLCONF = 'renthive.urls'
+ROOT_URLCONF = 'renthive.urls'  # Root URL configuration module
 
-TEMPLATES = [
+TEMPLATES = [  # Template engine configuration
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',  # Use Django template backend
+        'DIRS': [BASE_DIR / 'templates'],  # Directories to search for templates
+        'APP_DIRS': True,  # Look for templates inside installed apps
         'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+            'context_processors': [  # List of context processors
+                'django.template.context_processors.request',  # Add request to context
+                'django.contrib.auth.context_processors.auth',  # Add auth to context
+                'django.contrib.messages.context_processors.messages',  # Add messages to context
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'renthive.wsgi.application'
+WSGI_APPLICATION = 'renthive.wsgi.application'  # WSGI application entry point
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
+DATABASES = {  # Database configuration
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'renthive'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'mundia'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5433'),
+        'ENGINE': 'django.db.backends.postgresql',  # Use PostgreSQL as database engine
+        'NAME': os.getenv('DB_NAME', 'renthive'),  # Database name from environment or default
+        'USER': os.getenv('DB_USER', 'postgres'),  # Database user from environment or default
+        'PASSWORD': os.getenv('DB_PASSWORD', 'mundia'),  # Database password from environment or default
+        'HOST': os.getenv('DB_HOST', 'localhost'),  # Database host from environment or default
+        'PORT': os.getenv('DB_PORT', '5433'),  # Database port from environment or default
     }
 }
 
@@ -97,67 +96,67 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
+AUTH_PASSWORD_VALIDATORS = [  # List of password validators
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # Prevent passwords similar to user attributes
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # Enforce minimum password length
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # Prevent common passwords
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # Prevent all-numeric passwords
     },
 ]
-AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = '/users/profile/'
-LOGOUT_REDIRECT_URL = '/'
+AUTH_USER_MODEL = 'users.User'  # Custom user model
+LOGIN_REDIRECT_URL = '/users/profile/'  # Redirect after login
+LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'  # Use Bootstrap 4 for crispy forms
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us'  # Default language code
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC'  # Default time zone
 
-USE_I18N = True
+USE_I18N = True  # Enable Django’s translation system
 
-USE_TZ = True
+USE_TZ = True  # Enable timezone-aware datetimes
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_URL = '/static/'  # URL to access static files
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Directories for static files
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  # Default primary key field type
 
 # In settings.py
-import os
-from dotenv import load_dotenv
+import os  # Import os module again (redundant, already imported above)
+from dotenv import load_dotenv  # Import load_dotenv again (redundant, already imported above)
 
-load_dotenv()  # Load environment variables from .env file
+load_dotenv()  # Load environment variables from .env file (redundant, already called above)
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'renthiveproperties@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'ttdw uajk ejrb vgyk')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Use SMTP backend for email
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')  # Email host from environment or default
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))  # Email port from environment or default
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'  # Use TLS for email (convert string to bool)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'renthiveproperties@gmail.com')  # Email host user from environment or default
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'ttdw uajk ejrb vgyk')  # Email host password from environment or default
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)  # Default from email address
 
 # Mpesa Daraja API credentials (replace with your actual values or set in .env)
-MPESA_CONSUMER_KEY = os.getenv('MPESA_CONSUMER_KEY', 'XJpdWu6QEto0BRAsNFYmAmWi80uDK8tPQzhC0ymA7bzIeA2k')
-MPESA_CONSUMER_SECRET = os.getenv('MPESA_CONSUMER_SECRET', 'gUKzdAEN0AnzQtvanpHChcLuFuO3hZsOSwc0jv4xcRmAm3hDJq7ph7INjF9cCHDf')
-MPESA_SHORTCODE = os.getenv('MPESA_SHORTCODE', '174379')
-MPESA_PASSKEY = os.getenv('MPESA_PASSKEY', 'your_passkey')
-MPESA_ENV = os.getenv('MPESA_ENV', 'sandbox')  # or 'production'
+MPESA_CONSUMER_KEY = os.getenv('MPESA_CONSUMER_KEY', 'XJpdWu6QEto0BRAsNFYmAmWi80uDK8tPQzhC0ymA7bzIeA2k')  # Mpesa API consumer key
+MPESA_CONSUMER_SECRET = os.getenv('MPESA_CONSUMER_SECRET', 'gUKzdAEN0AnzQtvanpHChcLuFuO3hZsOSwc0jv4xcRmAm3hDJq7ph7INjF9cCHDf')  # Mpesa API consumer secret
+MPESA_SHORTCODE = os.getenv('MPESA_SHORTCODE', '174379')  # Mpesa shortcode
+MPESA_PASSKEY = os.getenv('MPESA_PASSKEY', 'your_passkey')  # Mpesa passkey
+MPESA_ENV = os.getenv('MPESA_ENV', 'sandbox')  # Mpesa environment (sandbox or production)

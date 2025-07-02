@@ -1,70 +1,70 @@
-{% extends 'base.html' %}
-{% block title %}Register{% endblock %}
-{% block content %}
-<div class="flex flex-col items-center justify-center min-h-[60vh] py-8">
-  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-    <h2 class="text-2xl font-bold text-black mb-6 text-center">Create your account</h2>
-    {% if invited_unit %}
-        <div class="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded border-l-4 border-yellow-400">
-            You are registering as a tenant for unit <span class="font-bold">{{ invited_unit.unit_number }}</span> at <span class="font-bold">{{ invited_unit.property.name }}</span>.
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Register{% endblock %}  {# Set the page title to "Register" #}
+{% block content %}  {# Begin the content block #}
+<div class="flex flex-col items-center justify-center min-h-[60vh] py-8">  {# Center the content vertically and horizontally #}
+  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border border-gray-200">  {# Card container for the form #}
+    <h2 class="text-2xl font-bold text-black mb-6 text-center">Create your account</h2>  {# Heading for the registration form #}
+    {% if invited_unit %}  {# If the user is invited to a unit #}
+        <div class="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded border-l-4 border-yellow-400">  {# Show a highlighted message #}
+            You are registering as a tenant for unit <span class="font-bold">{{ invited_unit.unit_number }}</span> at <span class="font-bold">{{ invited_unit.property.name }}</span>.  {# Show unit and property info #}
         </div>
     {% endif %}
-    {% if show_errors and form.errors %}
-        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            Please correct the error{{ form.errors|length|pluralize }} below.
+    {% if show_errors and form.errors %}  {# If there are form errors and errors should be shown #}
+        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">  {# Show error message box #}
+            Please correct the error{{ form.errors|length|pluralize }} below.  {# Pluralize "error" if needed #}
         </div>
     {% endif %}
-    <form method="post" class="space-y-5">
-      {% csrf_token %}
-      {% for field in form %}
-        {% if field.name == 'user_type' and invited_unit %}
-          <input type="hidden" name="user_type" value="tenant" />
-        {% elif field.name == 'user_type' %}
+    <form method="post" class="space-y-5">  {# Start the registration form, POST method #}
+      {% csrf_token %}  {# CSRF protection token #}
+      {% for field in form %}  {# Loop through each form field #}
+        {% if field.name == 'user_type' and invited_unit %}  {# If user_type field and invited_unit exists #}
+          <input type="hidden" name="user_type" value="tenant" />  {# Set user_type as tenant (hidden) #}
+        {% elif field.name == 'user_type' %}  {# If user_type field and no invited_unit #}
           <div>
-            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
-            <select name="user_type" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50">
-              <option value="">Select user type</option>
-              <option value="tenant" {% if field.value == 'tenant' %}selected{% endif %}>Tenant</option>
-              <option value="owner" {% if field.value == 'owner' %}selected{% endif %}>Owner</option>
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>  {# Label for user_type #}
+            <select name="user_type" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50">  {# Dropdown for user_type #}
+              <option value="">Select user type</option>  {# Placeholder option #}
+              <option value="tenant" {% if field.value == 'tenant' %}selected{% endif %}>Tenant</option>  {# Tenant option #}
+              <option value="owner" {% if field.value == 'owner' %}selected{% endif %}>Owner</option>  {# Owner option #}
             </select>
-            {% if field.errors %}
-              <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
+            {% if field.errors %}  {# If there are errors for this field #}
+              <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>  {# Show error message #}
             {% endif %}
-            {% if field.help_text and not field.errors %}
-              <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+            {% if field.help_text and not field.errors %}  {# If help text exists and no errors #}
+              <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>  {# Show help text #}
             {% endif %}
           </div>
-        {% else %}
+        {% else %}  {# For all other fields #}
           <div>
-            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
-            {% if field.widget.input_type == 'password' %}
-              <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" placeholder="Enter your password" />
-              {% if field.errors %}
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>  {# Label for the field #}
+            {% if field.widget.input_type == 'password' %}  {# If the field is a password #}
+              <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" placeholder="Enter your password" />  {# Password input #}
+              {% if field.errors %}  {# Show errors if any #}
                 <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
               {% endif %}
-            {% elif field.widget.input_type == 'email' %}
-              <input type="email" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" placeholder="Enter your email" value="{{ field.value|default_if_none:'' }}" />
-              {% if field.errors %}
+            {% elif field.widget.input_type == 'email' %}  {# If the field is an email #}
+              <input type="email" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" placeholder="Enter your email" value="{{ field.value|default_if_none:'' }}" />  {# Email input #}
+              {% if field.errors %}  {# Show errors if any #}
                 <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
               {% endif %}
-            {% else %}
-              <input type="{{ field.widget.input_type }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" placeholder="{{ field.label }}" value="{{ field.value|default_if_none:'' }}" />
-              {% if field.errors %}
+            {% else %}  {# For all other input types #}
+              <input type="{{ field.widget.input_type }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" placeholder="{{ field.label }}" value="{{ field.value|default_if_none:'' }}" />  {# Generic input #}
+              {% if field.errors %}  {# Show errors if any #}
                 <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
               {% endif %}
             {% endif %}
-            {% if field.help_text and not field.errors %}
+            {% if field.help_text and not field.errors %}  {# Show help text if available and no errors #}
               <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
             {% endif %}
           </div>
         {% endif %}
       {% endfor %}
-      <button type="submit" class="w-full bg-primary text-black font-semibold py-2 rounded hover:bg-black hover:text-primary transition">Sign Up</button>
+      <button type="submit" class="w-full bg-primary text-black font-semibold py-2 rounded hover:bg-black hover:text-primary transition">Sign Up</button>  {# Submit button #}
     </form>
-    <div class="mt-6 text-center text-sm text-gray-600">
+    <div class="mt-6 text-center text-sm text-gray-600">  {# Link to login page #}
       Already have an account?
       <a href="/accounts/login/" class="text-primary font-semibold hover:underline">Login</a>
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}

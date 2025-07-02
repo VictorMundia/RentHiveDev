@@ -1,18 +1,18 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RentHive | Modern Property Management in Kenya</title>
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
-    <meta name="description" content="RentHive simplifies rental management for small property owners and tenants in Kenya. Manage your rentals, payments, and maintenance seamlessly." />
-    <script src="https://cdn.tailwindcss.com"></script>
+{% load static %}  {# Loads the static template tag for referencing static files #}
+<!DOCTYPE html>  {# Declares the document type as HTML5 #}
+<html lang="en">  {# Opens the HTML document and sets the language to English #}
+  <head>  {# Head section for metadata and links #}
+    <meta charset="UTF-8" />  {# Sets character encoding to UTF-8 #}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  {# Ensures responsive design on all devices #}
+    <title>RentHive | Modern Property Management in Kenya</title>  {# Sets the page title #}
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />  {# Links to the favicon using Django's static tag #}
+    <meta name="description" content="RentHive simplifies rental management for small property owners and tenants in Kenya. Manage your rentals, payments, and maintenance seamlessly." />  {# Meta description for SEO #}
+    <script src="https://cdn.tailwindcss.com"></script>  {# Loads Tailwind CSS from CDN #}
     <script>
-      tailwind.config = {
+      tailwind.config = {  // Configures Tailwind CSS theme
         theme: {
           extend: {
-            colors: {
+            colors: {  // Custom color palette
               primary: '#FFD600',
               black: '#000',
               gray: {
@@ -26,73 +26,73 @@
       }
     </script>
   </head>
-  <body class="flex flex-col min-h-screen bg-primary/10">
+  <body class="flex flex-col min-h-screen bg-primary/10">  {# Body with flex layout and light yellow background #}
     <!-- Header -->
-    <nav class="bg-black shadow mb-8">
-      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="/" class="flex items-center space-x-2">
-          <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />
-          <span class="text-xl font-bold text-white">RentHive</span>
+    <nav class="bg-black shadow mb-8">  {# Navigation bar with black background and shadow #}
+      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">  {# Container for nav content, centered and spaced #}
+        <a href="/" class="flex items-center space-x-2">  {# Logo and brand link to homepage #}
+          <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />  {# Brand logo image #}
+          <span class="text-xl font-bold text-white">RentHive</span>  {# Brand name #}
         </a>
-        <div class="space-x-4">
-          <a href="/" class="text-white hover:text-primary">Home</a>
-          <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>
-          <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>
+        <div class="space-x-4">  {# Navigation links container #}
+          <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+          <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>  {# Login link #}
+          <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>  {# Sign Up button styled link #}
         </div>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <div class="min-h-[80vh] flex flex-col justify-center items-center bg-gradient-to-br from-yellow-100 via-white to-gray-100 py-16">
-      <div class="text-center mb-10">
-        <img src="{% static 'img/renthivebg2.png' %}" alt="RentHive Logo" class="mx-auto h-32 w-32 mb-4 drop-shadow-lg" />
-        <h1 class="text-5xl font-extrabold text-black mb-2 tracking-tight">Welcome to <span class="text-yellow-500">RentHive</span></h1>
-        <p class="text-lg text-gray-700 max-w-xl mx-auto mb-6">Modern property management for tenants and owners. Seamless payments, maintenance, and communication—all in one place.</p>
-        <div class="flex flex-wrap justify-center gap-4 mt-6">
-          <a href="{% url 'users:register' %}" class="bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold shadow hover:bg-yellow-600 transition flex items-center gap-2">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    <div class="min-h-[80vh] flex flex-col justify-center items-center bg-gradient-to-br from-yellow-100 via-white to-gray-100 py-16">  {# Hero section with gradient background and centered content #}
+      <div class="text-center mb-10">  {# Centered hero content #}
+        <img src="{% static 'img/renthivebg2.png' %}" alt="RentHive Logo" class="mx-auto h-32 w-32 mb-4 drop-shadow-lg" />  {# Large logo image #}
+        <h1 class="text-5xl font-extrabold text-black mb-2 tracking-tight">Welcome to <span class="text-yellow-500">RentHive</span></h1>  {# Main heading with highlighted brand #}
+        <p class="text-lg text-gray-700 max-w-xl mx-auto mb-6">Modern property management for tenants and owners. Seamless payments, maintenance, and communication—all in one place.</p>  {# Subheading/description #}
+        <div class="flex flex-wrap justify-center gap-4 mt-6">  {# Container for call-to-action buttons #}
+          <a href="{% url 'users:register' %}" class="bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold shadow hover:bg-yellow-600 transition flex items-center gap-2">  {# Get Started button #}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>  {# Plus icon #}
             Get Started
           </a>
-          <a href="{% url 'login' %}" class="bg-black text-yellow-400 px-6 py-3 rounded-lg font-bold shadow hover:bg-gray-900 transition flex items-center gap-2">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <a href="{% url 'login' %}" class="bg-black text-yellow-400 px-6 py-3 rounded-lg font-bold shadow hover:bg-gray-900 transition flex items-center gap-2">  {# Login button #}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>  {# Arrow icon #}
             Login
           </a>
         </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10 max-w-5xl w-full">
-        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">
-          <img src="{% static 'img/mpesa.svg' %}" alt="Mpesa" class="h-12 w-12 mb-3" />
-          <h3 class="text-xl font-bold text-black mb-2">Easy Payments</h3>
-          <p class="text-gray-600">Pay rent via Mpesa, card, or bank. Fast, secure, and convenient for everyone.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10 max-w-5xl w-full">  {# Features grid, responsive columns #}
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">  {# Feature card 1 #}
+          <img src="{% static 'img/mpesa.svg' %}" alt="Mpesa" class="h-12 w-12 mb-3" />  {# Mpesa icon #}
+          <h3 class="text-xl font-bold text-black mb-2">Easy Payments</h3>  {# Feature title #}
+          <p class="text-gray-600">Pay rent via Mpesa, card, or bank. Fast, secure, and convenient for everyone.</p>  {# Feature description #}
         </div>
-        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">
-          <svg class="h-12 w-12 mb-3 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4"/></svg>
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">  {# Feature card 2 #}
+          <svg class="h-12 w-12 mb-3 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4"/></svg>  {# Maintenance icon #}
           <h3 class="text-xl font-bold text-black mb-2">Maintenance Requests</h3>
           <p class="text-gray-600">Submit, track, and resolve maintenance issues with real-time updates and feedback.</p>
         </div>
-        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">
-          <svg class="h-12 w-12 mb-3 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 3v4a1 1 0 001 1h4"/></svg>
+        <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center hover:scale-105 transition">  {# Feature card 3 #}
+          <svg class="h-12 w-12 mb-3 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 3v4a1 1 0 001 1h4"/></svg>  {# Dashboard icon #}
           <h3 class="text-xl font-bold text-black mb-2">Owner Dashboard</h3>
           <p class="text-gray-600">Manage properties, view tenants, and monitor all activity from a single dashboard.</p>
         </div>
       </div>
-      <div class="mt-16 text-center">
-        <h2 class="text-2xl font-bold mb-2 text-black">Why RentHive?</h2>
-        <div class="flex flex-wrap justify-center gap-6 mt-4">
-          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
-            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      <div class="mt-16 text-center">  {# Section for "Why RentHive?" #}
+        <h2 class="text-2xl font-bold mb-2 text-black">Why RentHive?</h2>  {# Section heading #}
+        <div class="flex flex-wrap justify-center gap-6 mt-4">  {# Container for value props #}
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">  {# Value prop 1 #}
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>  {# Check icon #}
             <span class="font-semibold text-black">Secure & Reliable</span>
           </div>
-          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
-            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"/></svg>
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">  {# Value prop 2 #}
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"/></svg>  {# Info icon #}
             <span class="font-semibold text-black">Transparent Communication</span>
           </div>
-          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
-            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">  {# Value prop 3 #}
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>  {# Clock icon #}
             <span class="font-semibold text-black">Real-Time Updates</span>
           </div>
-          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">
-            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+          <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full shadow">  {# Value prop 4 #}
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>  {# Check icon #}
             <span class="font-semibold text-black">Easy to Use</span>
           </div>
         </div>
@@ -100,10 +100,10 @@
     </div>
 
     <!-- Footer -->
-    <footer class="py-8 border-t text-center text-gray-700 bg-gray-100 mt-8">
-      <p>&copy; {% now "Y" %} RentHive. All rights reserved.</p>
-      <p class="text-sm">Empowering Property Management in Kenya.</p>
+    <footer class="py-8 border-t text-center text-gray-700 bg-gray-100 mt-8">  {# Footer section with copyright #}
+      <p>&copy; {% now "Y" %} RentHive. All rights reserved.</p>  {# Current year and copyright #}
+      <p class="text-sm">Empowering Property Management in Kenya.</p>  {# Tagline #}
     </footer>
-    {% block scripts %}{% endblock %}
+    {% block scripts %}{% endblock %}  {# Placeholder for additional scripts #}
   </body>
 </html>

@@ -1,58 +1,58 @@
-{% extends 'base.html' %}
-{% block title %}Unit Details{% endblock %}
-{% block content %}
-<div class="max-w-2xl mx-auto py-10">
-  <h2 class="text-2xl font-bold text-black mb-4">Unit {{ unit.unit_number }} Details</h2>
-  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-    <h3 class="text-lg font-bold text-black mb-2">Tenant Information</h3>
-    {% if tenant %}
-      <p><strong>Name:</strong> {{ tenant.get_full_name }}</p>
-      <p><strong>Email:</strong> {{ tenant.email }}</p>
-      <p><strong>Phone:</strong> {{ tenant.phone_number }}</p>
-      <p><strong>Username:</strong> {{ tenant.username }}</p>
-    {% else %}
-      <p class="text-gray-700">No tenant assigned to this unit.</p>
-    {% endif %}
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Unit Details{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the content block #}
+<div class="max-w-2xl mx-auto py-10">  {# Container div with max width and padding #}
+  <h2 class="text-2xl font-bold text-black mb-4">Unit {{ unit.unit_number }} Details</h2>  {# Heading showing unit number #}
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Card for tenant info #}
+    <h3 class="text-lg font-bold text-black mb-2">Tenant Information</h3>  {# Section heading #}
+    {% if tenant %}  {# Check if tenant exists #}
+      <p><strong>Name:</strong> {{ tenant.get_full_name }}</p>  {# Display tenant's full name #}
+      <p><strong>Email:</strong> {{ tenant.email }}</p>  {# Display tenant's email #}
+      <p><strong>Phone:</strong> {{ tenant.phone_number }}</p>  {# Display tenant's phone number #}
+      <p><strong>Username:</strong> {{ tenant.username }}</p>  {# Display tenant's username #}
+    {% else %}  {# If no tenant assigned #}
+      <p class="text-gray-700">No tenant assigned to this unit.</p>  {# Show message for no tenant #}
+    {% endif %}  {# End tenant check #}
   </div>
-  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-    <h3 class="text-lg font-bold text-black mb-2">Lease & Rent</h3>
-    {% if lease %}
-      <p><strong>Start Date:</strong> {{ lease.start_date }}</p>
-      <p><strong>End Date:</strong> {{ lease.end_date }}</p>
-      <p><strong>Rent Amount:</strong> ${{ lease.rent_amount }}</p>
-      <p><strong>Status:</strong> {% if lease.is_active %}Active{% else %}Inactive{% endif %}</p>
-      <p><strong>Rent Balance:</strong> ${{ rent_balance }}</p>
-    {% else %}
-      <p class="text-gray-700">No active lease for this unit.</p>
-    {% endif %}
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Card for lease info #}
+    <h3 class="text-lg font-bold text-black mb-2">Lease & Rent</h3>  {# Section heading #}
+    {% if lease %}  {# Check if lease exists #}
+      <p><strong>Start Date:</strong> {{ lease.start_date }}</p>  {# Display lease start date #}
+      <p><strong>End Date:</strong> {{ lease.end_date }}</p>  {# Display lease end date #}
+      <p><strong>Rent Amount:</strong> ${{ lease.rent_amount }}</p>  {# Display rent amount #}
+      <p><strong>Status:</strong> {% if lease.is_active %}Active{% else %}Inactive{% endif %}</p>  {# Show lease status #}
+      <p><strong>Rent Balance:</strong> ${{ rent_balance }}</p>  {# Display rent balance #}
+    {% else %}  {# If no lease #}
+      <p class="text-gray-700">No active lease for this unit.</p>  {# Show message for no lease #}
+    {% endif %}  {# End lease check #}
   </div>
-  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-    <h3 class="text-lg font-bold text-black mb-2">Payment History</h3>
-    {% if payments %}
-      <ul class="list-disc pl-5 text-gray-700 space-y-1">
-        {% for payment in payments %}
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Card for payment history #}
+    <h3 class="text-lg font-bold text-black mb-2">Payment History</h3>  {# Section heading #}
+    {% if payments %}  {# Check if payments exist #}
+      <ul class="list-disc pl-5 text-gray-700 space-y-1">  {# List of payments #}
+        {% for payment in payments %}  {# Loop through each payment #}
           <li>
-            ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}
+            ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}  {# Show payment details and status #}
           </li>
-        {% endfor %}
+        {% endfor %}  {# End payment loop #}
       </ul>
-    {% else %}
-      <p class="text-gray-700">No payments yet.</p>
-    {% endif %}
+    {% else %}  {# If no payments #}
+      <p class="text-gray-700">No payments yet.</p>  {# Show message for no payments #}
+    {% endif %}  {# End payments check #}
   </div>
-  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-    <h3 class="text-lg font-bold text-black mb-2">Maintenance Requests</h3>
-    {% if maintenance_requests %}
-      <ul class="list-disc pl-5 text-gray-700 space-y-1">
-        {% for req in maintenance_requests %}
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Card for maintenance requests #}
+    <h3 class="text-lg font-bold text-black mb-2">Maintenance Requests</h3>  {# Section heading #}
+    {% if maintenance_requests %}  {# Check if maintenance requests exist #}
+      <ul class="list-disc pl-5 text-gray-700 space-y-1">  {# List of maintenance requests #}
+        {% for req in maintenance_requests %}  {# Loop through each request #}
           <li>
-            {{ req.description }} - {{ req.status|title }} ({{ req.created_at }})
+            {{ req.description }} - {{ req.status|title }} ({{ req.created_at }})  {# Show request description, status, and date #}
           </li>
-        {% endfor %}
+        {% endfor %}  {# End maintenance request loop #}
       </ul>
-    {% else %}
-      <p class="text-gray-700">No maintenance requests yet.</p>
-    {% endif %}
+    {% else %}  {# If no maintenance requests #}
+      <p class="text-gray-700">No maintenance requests yet.</p>  {# Show message for no requests #}
+    {% endif %}  {# End maintenance requests check #}
   </div>
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}

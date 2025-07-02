@@ -1,29 +1,29 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
-{% block content %}
-{% if notifications %}
-  <div class="mb-6">
-    <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded shadow text-black">
-      <h3 class="font-bold mb-2">Maintenance Notifications</h3>
-      <ul class="space-y-2">
-        {% for note in notifications %}
-          <li>
-            <a href="{{ note.url }}" class="font-semibold text-primary hover:underline">{{ note.message }}</a>
-            <span class="text-xs text-gray-600 ml-2">{{ note.created_at|date:"M d, H:i" }}</span>
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Dashboard{% endblock %}  {# Set the page title to "Dashboard" #}
+{% block content %}  {# Start the content block #}
+{% if notifications %}  {# Check if there are any notifications #}
+  <div class="mb-6">  {# Add margin-bottom for spacing #}
+    <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded shadow text-black">  {# Styled notification box #}
+      <h3 class="font-bold mb-2">Maintenance Notifications</h3>  {# Section heading #}
+      <ul class="space-y-2">  {# List with vertical spacing between items #}
+        {% for note in notifications %}  {# Loop through each notification #}
+          <li>  {# List item for each notification #}
+            <a href="{{ note.url }}" class="font-semibold text-primary hover:underline">{{ note.message }}</a>  {# Notification message as a link #}
+            <span class="text-xs text-gray-600 ml-2">{{ note.created_at|date:"M d, H:i" }}</span>  {# Display creation date and time #}
           </li>
-        {% endfor %}
+        {% endfor %}  {# End of notifications loop #}
       </ul>
     </div>
   </div>
-{% endif %}
-<div class="container mt-5">
-    <h2 class="mb-4">Dashboard</h2>
-    <p>Welcome to your dashboard! Here you can see a summary of your account and recent activity.</p>
-    <!-- Add more dashboard widgets or stats as needed -->
+{% endif %}  {# End of notifications check #}
+<div class="container mt-5">  {# Main dashboard container with top margin #}
+    <h2 class="mb-4">Dashboard</h2>  {# Dashboard heading #}
+    <p>Welcome to your dashboard! Here you can see a summary of your account and recent activity.</p>  {# Welcome message #}
+    <!-- Add more dashboard widgets or stats as needed -->  {# Placeholder for additional widgets #}
 </div>
-{% if user.is_authenticated and user.user_type == 'owner' %}
-  <div class="mb-6">
-    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>
+{% if user.is_authenticated and user.user_type == 'owner' %}  {# Check if user is logged in and is an owner #}
+  <div class="mb-6">  {# Add margin-bottom for spacing #}
+    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>  {# Button linking to owner's maintenance requests #}
   </div>
-{% endif %}
-{% endblock %}
+{% endif %}  {# End of owner check #}
+{% endblock %}  {# End of content block #}

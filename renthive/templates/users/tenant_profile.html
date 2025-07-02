@@ -1,125 +1,125 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Tenant Dashboard{% endblock %}
-{% block content %}
-<div class="flex flex-col items-center justify-center min-h-[70vh] py-10">
-  {% if request.session.welcome_property %}
-    <div class="w-full max-w-2xl mb-6">
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% load static %}  {# Load static files tag #}
+{% block title %}Tenant Dashboard{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the content block #}
+<div class="flex flex-col items-center justify-center min-h-[70vh] py-10">  {# Center content vertically and horizontally #}
+  {% if request.session.welcome_property %}  {# If a welcome property exists in session #}
+    <div class="w-full max-w-2xl mb-6">  {# Container for welcome message #}
       <div class="bg-primary/20 border-l-4 border-primary p-4 rounded shadow text-black text-lg font-semibold">
-        Welcome to {{ request.session.welcome_property }}! Your profile is set up. Explore your dashboard below.
+        Welcome to {{ request.session.welcome_property }}! Your profile is set up. Explore your dashboard below.  {# Display welcome message #}
       </div>
     </div>
   {% endif %}
-  <h2 class="text-3xl font-extrabold text-black mb-2 text-center">Tenant Dashboard</h2>
-  <div class="w-full max-w-2xl mb-8">
-    {% if lease %}
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-        <h3 class="text-xl font-bold text-black mb-2">Lease Details</h3>
-        <p><strong>Property:</strong> {{ unit.property.name }}</p>
-        <p><strong>Unit:</strong> {{ unit.unit_number }}</p>
-        <p><strong>Start Date:</strong> {{ lease.start_date }}</p>
-        <p><strong>End Date:</strong> {{ lease.end_date }}</p>
-        <p><strong>Rent Amount:</strong> ${{ lease.rent_amount }}</p>
-        <p><strong>Status:</strong> {% if lease.is_active %}Active{% else %}Inactive{% endif %}</p>
+  <h2 class="text-3xl font-extrabold text-black mb-2 text-center">Tenant Dashboard</h2>  {# Dashboard heading #}
+  <div class="w-full max-w-2xl mb-8">  {# Main dashboard container #}
+    {% if lease %}  {# If tenant has a lease #}
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Lease details card #}
+        <h3 class="text-xl font-bold text-black mb-2">Lease Details</h3>  {# Lease details heading #}
+        <p><strong>Property:</strong> {{ unit.property.name }}</p>  {# Show property name #}
+        <p><strong>Unit:</strong> {{ unit.unit_number }}</p>  {# Show unit number #}
+        <p><strong>Start Date:</strong> {{ lease.start_date }}</p>  {# Show lease start date #}
+        <p><strong>End Date:</strong> {{ lease.end_date }}</p>  {# Show lease end date #}
+        <p><strong>Rent Amount:</strong> ${{ lease.rent_amount }}</p>  {# Show rent amount #}
+        <p><strong>Status:</strong> {% if lease.is_active %}Active{% else %}Inactive{% endif %}</p>  {# Show lease status #}
       </div>
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-        <h3 class="text-xl font-bold text-black mb-2">Rent Due</h3>
-        <div class="flex items-center gap-4 mb-2">
-          <span class="text-3xl font-extrabold text-primary">${{ rent_balance }}</span>
-          <form method="post" class="flex flex-col md:flex-row gap-2 items-end">
-            {% csrf_token %}
-            <input type="hidden" name="pay_rent" value="1">
-            <input type="number" step="0.01" min="1" max="{{ rent_balance }}" name="amount" id="amount" class="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required placeholder="Amount">
-            <div class="flex gap-3 items-center" id="payment-method-icons">
-              <label class="flex flex-col items-center cursor-pointer">
-                <input type="radio" name="payment_method" value="mpesa" class="sr-only payment-method-radio" required id="mpesa-radio">
-                <img src="{% static 'img/mpesa.svg' %}" alt="Mpesa" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>
-                <span class="text-xs text-gray-700">M-Pesa</span>
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Rent due card #}
+        <h3 class="text-xl font-bold text-black mb-2">Rent Due</h3>  {# Rent due heading #}
+        <div class="flex items-center gap-4 mb-2">  {# Flex container for rent and form #}
+          <span class="text-3xl font-extrabold text-primary">${{ rent_balance }}</span>  {# Show rent balance #}
+          <form method="post" class="flex flex-col md:flex-row gap-2 items-end">  {# Rent payment form #}
+            {% csrf_token %}  {# CSRF protection token #}
+            <input type="hidden" name="pay_rent" value="1">  {# Hidden input to indicate rent payment #}
+            <input type="number" step="0.01" min="1" max="{{ rent_balance }}" name="amount" id="amount" class="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required placeholder="Amount">  {# Amount input #}
+            <div class="flex gap-3 items-center" id="payment-method-icons">  {# Payment method icons container #}
+              <label class="flex flex-col items-center cursor-pointer">  {# Mpesa payment option #}
+                <input type="radio" name="payment_method" value="mpesa" class="sr-only payment-method-radio" required id="mpesa-radio">  {# Mpesa radio button #}
+                <img src="{% static 'img/mpesa.svg' %}" alt="Mpesa" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>  {# Mpesa icon #}
+                <span class="text-xs text-gray-700">M-Pesa</span>  {# Mpesa label #}
               </label>
-              <label class="flex flex-col items-center cursor-pointer">
-                <input type="radio" name="payment_method" value="bank" class="sr-only payment-method-radio" required>
-                <img src="{% static 'img/bank.svg' %}" alt="Bank" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>
-                <span class="text-xs text-gray-700">Bank</span>
+              <label class="flex flex-col items-center cursor-pointer">  {# Bank payment option #}
+                <input type="radio" name="payment_method" value="bank" class="sr-only payment-method-radio" required>  {# Bank radio button #}
+                <img src="{% static 'img/bank.svg' %}" alt="Bank" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>  {# Bank icon #}
+                <span class="text-xs text-gray-700">Bank</span>  {# Bank label #}
               </label>
-              <label class="flex flex-col items-center cursor-pointer">
-                <input type="radio" name="payment_method" value="card" class="sr-only payment-method-radio" required>
-                <img src="{% static 'img/card.svg' %}" alt="Card" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>
-                <span class="text-xs text-gray-700">Card</span>
+              <label class="flex flex-col items-center cursor-pointer">  {# Card payment option #}
+                <input type="radio" name="payment_method" value="card" class="sr-only payment-method-radio" required>  {# Card radio button #}
+                <img src="{% static 'img/card.svg' %}" alt="Card" class="w-10 h-10 mb-1 border-2 border-transparent hover:border-primary focus:border-primary rounded-full transition"/>  {# Card icon #}
+                <span class="text-xs text-gray-700">Card</span>  {# Card label #}
               </label>
             </div>
-            <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Pay Rent</button>
+            <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Pay Rent</button>  {# Pay rent button #}
           </form>
           <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              const mpesaRadio = document.getElementById('mpesa-radio');
-              const form = mpesaRadio.closest('form');
-              mpesaRadio.addEventListener('change', function() {
+            document.addEventListener('DOMContentLoaded', function() {  // Wait for DOM to load
+              const mpesaRadio = document.getElementById('mpesa-radio');  // Get Mpesa radio button
+              const form = mpesaRadio.closest('form');  // Get the form element
+              mpesaRadio.addEventListener('change', function() {  // On Mpesa selection
                 if (mpesaRadio.checked) {
-                  const amount = form.querySelector('input[name="amount"]').value;
-                  window.location.href = "{% url 'users:lipa_na_mpesa' %}?amount=" + encodeURIComponent(amount);
+                  const amount = form.querySelector('input[name="amount"]').value;  // Get amount value
+                  window.location.href = "{% url 'users:lipa_na_mpesa' %}?amount=" + encodeURIComponent(amount);  // Redirect to Mpesa payment
                 }
               });
               // Card redirect
-              const cardRadio = form.querySelector('input[value="card"]');
-              cardRadio.addEventListener('change', function() {
+              const cardRadio = form.querySelector('input[value="card"]');  // Get Card radio button
+              cardRadio.addEventListener('change', function() {  // On Card selection
                 if (cardRadio.checked) {
-                  const amount = form.querySelector('input[name="amount"]').value;
-                  window.location.href = "{% url 'users:card_payment' %}?amount=" + encodeURIComponent(amount);
+                  const amount = form.querySelector('input[name="amount"]').value;  // Get amount value
+                  window.location.href = "{% url 'users:card_payment' %}?amount=" + encodeURIComponent(amount);  // Redirect to Card payment
                 }
               });
               // Bank redirect
-              const bankRadio = form.querySelector('input[value="bank"]');
-              bankRadio.addEventListener('change', function() {
+              const bankRadio = form.querySelector('input[value="bank"]');  // Get Bank radio button
+              bankRadio.addEventListener('change', function() {  // On Bank selection
                 if (bankRadio.checked) {
-                  const amount = form.querySelector('input[name="amount"]').value;
-                  window.location.href = "{% url 'users:bank_transfer' %}?amount=" + encodeURIComponent(amount);
+                  const amount = form.querySelector('input[name="amount"]').value;  // Get amount value
+                  window.location.href = "{% url 'users:bank_transfer' %}?amount=" + encodeURIComponent(amount);  // Redirect to Bank payment
                 }
               });
             });
           </script>
         </div>
-        {% if payment_success %}
-          <div class="mt-2 p-2 bg-green-100 text-green-700 rounded">Payment received! A receipt has been sent to your email.</div>
+        {% if payment_success %}  {# If payment was successful #}
+          <div class="mt-2 p-2 bg-green-100 text-green-700 rounded">Payment received! A receipt has been sent to your email.</div>  {# Show payment success message #}
         {% endif %}
       </div>
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-        <h3 class="text-xl font-bold text-black mb-2">Payment History</h3>
-        {% if payments %}
-          <ul class="list-disc pl-5 text-gray-700 space-y-1">
-            {% for payment in payments %}
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Payment history card #}
+        <h3 class="text-xl font-bold text-black mb-2">Payment History</h3>  {# Payment history heading #}
+        {% if payments %}  {# If there are payments #}
+          <ul class="list-disc pl-5 text-gray-700 space-y-1">  {# List of payments #}
+            {% for payment in payments %}  {# Loop through payments #}
               <li>
-                ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}
+                ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}  {# Show payment details #}
               </li>
             {% endfor %}
           </ul>
         {% else %}
-          <p class="text-gray-700">No payments yet.</p>
+          <p class="text-gray-700">No payments yet.</p>  {# No payments message #}
         {% endif %}
       </div>
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-        <h3 class="text-xl font-bold text-black mb-2">Maintenance Requests</h3>
-        <a href="{% url 'maintenance:create_request' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition mb-2 inline-block">Submit Maintenance Request</a>
-        <a href="{% url 'maintenance:tenant_requests_list' %}" class="ml-3 bg-yellow-500 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-600 transition mb-2 inline-block">View All My Requests</a>
-        {% if maintenance_requests %}
-          <ul class="list-disc pl-5 text-gray-700 space-y-1">
-            {% for req in maintenance_requests %}
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Maintenance requests card #}
+        <h3 class="text-xl font-bold text-black mb-2">Maintenance Requests</h3>  {# Maintenance requests heading #}
+        <a href="{% url 'maintenance:create_request' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition mb-2 inline-block">Submit Maintenance Request</a>  {# Link to submit request #}
+        <a href="{% url 'maintenance:tenant_requests_list' %}" class="ml-3 bg-yellow-500 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-600 transition mb-2 inline-block">View All My Requests</a>  {# Link to view all requests #}
+        {% if maintenance_requests %}  {# If there are maintenance requests #}
+          <ul class="list-disc pl-5 text-gray-700 space-y-1">  {# List of maintenance requests #}
+            {% for req in maintenance_requests %}  {# Loop through requests #}
               <li>
-                {{ req.issue }} - {{ req.status|title }} ({{ req.created_at }})
-                {% if req.status == 'completed' and not req.tenant_confirmed %}
-                  <a href="{% url 'maintenance:confirm_resolution' req.id %}" class="ml-2 text-primary underline font-semibold">Confirm Resolution</a>
+                {{ req.issue }} - {{ req.status|title }} ({{ req.created_at }})  {# Show request details #}
+                {% if req.status == 'completed' and not req.tenant_confirmed %}  {# If completed but not confirmed #}
+                  <a href="{% url 'maintenance:confirm_resolution' req.id %}" class="ml-2 text-primary underline font-semibold">Confirm Resolution</a>  {# Link to confirm resolution #}
                 {% endif %}
               </li>
             {% endfor %}
           </ul>
         {% else %}
-          <p class="text-gray-700">No maintenance requests yet.</p>
+          <p class="text-gray-700">No maintenance requests yet.</p>  {# No requests message #}
         {% endif %}
       </div>
     {% else %}
       <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded shadow text-black text-lg font-semibold">
-        No active lease found. Please contact your property owner for more information.
+        No active lease found. Please contact your property owner for more information.  {# No lease message #}
       </div>
     {% endif %}
   </div>
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}

@@ -1,65 +1,65 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RentHive - {% block title %}{% endblock %}</title>
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: '#FFD600',
-              black: '#000',
-              gray: {
-                100: '#f3f4f6',
-                700: '#374151',
-                800: '#1f2937',
-              },
-            },
-          },
+{% load static %}  {# Loads the static template tag for referencing static files #}
+<!DOCTYPE html>  {# Declares the document type as HTML5 #}
+<html lang="en">  {# Opens the HTML document and sets the language to English #}
+<head>  {# Opens the head section containing meta and link tags #}
+  <meta charset="UTF-8">  {# Sets the character encoding to UTF-8 #}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  {# Ensures responsive design on all devices #}
+  <title>RentHive - {% block title %}{% endblock %}</title>  {# Sets the page title, allowing child templates to override the title block #}
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />  {# Sets the favicon using a static file #}
+  <script src="https://cdn.tailwindcss.com"></script>  {# Loads Tailwind CSS from CDN #}
+  <script>
+    tailwind.config = {
+    theme: {
+      extend: {
+      colors: {
+        primary: '#FFD600',  // Custom primary color
+        black: '#000',       // Custom black color
+        gray: {
+        100: '#f3f4f6',   // Custom gray shade 100
+        700: '#374151',   // Custom gray shade 700
+        800: '#1f2937',   // Custom gray shade 800
         },
-      }
-    </script>
+      },
+      },
+    },
+    }
+  </script>  {# Configures Tailwind CSS with custom colors #}
 </head>
-<body class="flex flex-col min-h-screen bg-primary/10">
-    <nav class="bg-black shadow mb-8">
-      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="/" class="flex items-center space-x-2">
-          <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />
-          <span class="text-xl font-bold text-white">RentHive</span>
-        </a>
-        <div class="space-x-4 flex items-center">
-          {% if user.is_authenticated and user.user_type == 'tenant' %}
-            <a href="/" class="text-white hover:text-primary">Home</a>
-            <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">My Profile</a>
-            <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>
-          {% elif user.is_authenticated and user.user_type == 'owner' %}
-            <a href="/" class="text-white hover:text-primary">Home</a>
-            <a href="/properties/" class="text-white hover:text-primary">Properties</a>
-            <a href="/users/profile/" class="text-white hover:text-primary">Profile</a>
-            <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>
-          {% else %}
-            <a href="/" class="text-white hover:text-primary">Home</a>
-            <a href="/properties/" class="text-white hover:text-primary">Properties</a>
-            <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>
-            <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>
-          {% endif %}
-        </div>
-      </div>
-    </nav>
-    <main class="flex-1">
-      <div class="max-w-4xl mx-auto w-full px-4">
-        {% block content %}{% endblock %}
-      </div>
-    </main>
-    <footer class="py-8 border-t text-center text-gray-700 bg-gray-100 mt-8">
-      <p>&copy; {% now "Y" %} RentHive. All rights reserved.</p>
-      <p class="text-sm">Empowering Property Management in Kenya.</p>
-    </footer>
-    {% block scripts %}{% endblock %}
+<body class="flex flex-col min-h-screen bg-primary/10">  {# Body uses Tailwind classes for layout and background #}
+  <nav class="bg-black shadow mb-8">  {# Navigation bar with black background and shadow #}
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">  {# Container for nav content, centered and spaced #}
+    <a href="/" class="flex items-center space-x-2">  {# Logo and site name link to home #}
+      <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />  {# Logo image from static files #}
+      <span class="text-xl font-bold text-white">RentHive</span>  {# Site name styled #}
+    </a>
+    <div class="space-x-4 flex items-center">  {# Container for navigation links #}
+      {% if user.is_authenticated and user.user_type == 'tenant' %}  {# If user is logged in as tenant #}
+      <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+      <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">My Profile</a>  {# Tenant profile link #}
+      <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>  {# Logout link #}
+      {% elif user.is_authenticated and user.user_type == 'owner' %}  {# If user is logged in as owner #}
+      <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+      <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}
+      <a href="/users/profile/" class="text-white hover:text-primary">Profile</a>  {# Owner profile link #}
+      <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>  {# Logout link #}
+      {% else %}  {# If user is not authenticated #}
+      <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+      <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}
+      <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>  {# Login link #}
+      <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>  {# Sign up button styled #}
+      {% endif %}
+    </div>
+    </div>
+  </nav>
+  <main class="flex-1">  {# Main content area, grows to fill available space #}
+    <div class="max-w-4xl mx-auto w-full px-4">  {# Container for page content, centered #}
+    {% block content %}{% endblock %}  {# Content block for child templates to override #}
+    </div>
+  </main>
+  <footer class="py-8 border-t text-center text-gray-700 bg-gray-100 mt-8">  {# Footer with styling and spacing #}
+    <p>&copy; {% now "Y" %} RentHive. All rights reserved.</p>  {# Copyright with current year #}
+    <p class="text-sm">Empowering Property Management in Kenya.</p>  {# Tagline #}
+  </footer>
+  {% block scripts %}{% endblock %}  {# Block for additional scripts from child templates #}
 </body>
 </html>

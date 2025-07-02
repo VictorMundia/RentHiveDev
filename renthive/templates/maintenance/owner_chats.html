@@ -1,19 +1,19 @@
-{% extends 'base.html' %}
-{% block title %}Maintenance Chats{% endblock %}
-{% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Maintenance Chats</h2>
-    {% if chats %}
-        <ul class="list-group">
-            {% for chat in chats %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Unit {{ chat.unit.unit_number }} ({{ chat.unit.property.name }}) - Tenant: {{ chat.tenant.get_full_name|default:chat.tenant.username }}
-                    <a href="{% url 'maintenance:owner_chat_detail' chat.id %}" class="btn btn-sm btn-outline-primary">View Chat</a>
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Maintenance Chats{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the content block #}
+<div class="container mt-5">  {# Bootstrap container with top margin #}
+    <h2 class="mb-4">Maintenance Chats</h2>  {# Page heading with bottom margin #}
+    {% if chats %}  {# Check if there are any chat objects #}
+        <ul class="list-group">  {# Start a Bootstrap styled list group #}
+            {% for chat in chats %}  {# Loop through each chat object #}
+                <li class="list-group-item d-flex justify-content-between align-items-center">  {# List item with flex styling #}
+                    Unit {{ chat.unit.unit_number }} ({{ chat.unit.property.name }}) - Tenant: {{ chat.tenant.get_full_name|default:chat.tenant.username }}  {# Display unit number, property name, and tenant name or username #}
+                    <a href="{% url 'maintenance:owner_chat_detail' chat.id %}" class="btn btn-sm btn-outline-primary">View Chat</a>  {# Link to view chat details #}
                 </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No maintenance chats yet.</p>
-    {% endif %}
-</div>
-{% endblock %}
+            {% endfor %}  {# End of chat loop #}
+        </ul>  {# End of list group #}
+    {% else %}  {# If there are no chats #}
+        <p>No maintenance chats yet.</p>  {# Show message if no chats exist #}
+    {% endif %}  {# End if statement #}
+</div>  {# End of container div #}
+{% endblock %}  {# End of content block #}

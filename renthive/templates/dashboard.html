@@ -1,156 +1,156 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% load static %}  {# Load static files tag #}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard{% endblock %}  {# Set the page title #}
 
-{% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <h2>Welcome, {{ user.get_full_name|default:user.username }}</h2>
+{% block content %}  {# Start of the main content block #}
+<div class="row">  {# Bootstrap row for layout #}
+    <div class="col-md-8">  {# Main content column #}
+        <h2>Welcome, {{ user.get_full_name|default:user.username }}</h2>  {# Greet the user by name or username #}
         
-        {% if user.user_type == 'tenant' %}
+        {% if user.user_type == 'tenant' %}  {# If the user is a tenant #}
             <!-- Tenant Dashboard -->
-            <div class="card mt-4">
+            <div class="card mt-4">  {# Card for lease info #}
                 <div class="card-header">
-                    <h5>Your Lease</h5>
+                    <h5>Your Lease</h5>  {# Lease section header #}
                 </div>
                 <div class="card-body">
-                    {% if lease %}
-                        <p><strong>Property:</strong> {{ lease.unit.property.name }}</p>
-                        <p><strong>Unit:</strong> {{ lease.unit.unit_number }}</p>
-                        <p><strong>Rent:</strong> KSh {{ lease.rent_amount }}</p>
-                        <p><strong>Lease Period:</strong> {{ lease.start_date }} to {{ lease.end_date }}</p>
-                    {% else %}
-                        <p>You don't have an active lease.</p>
+                    {% if lease %}  {# If tenant has a lease #}
+                        <p><strong>Property:</strong> {{ lease.unit.property.name }}</p>  {# Show property name #}
+                        <p><strong>Unit:</strong> {{ lease.unit.unit_number }}</p>  {# Show unit number #}
+                        <p><strong>Rent:</strong> KSh {{ lease.rent_amount }}</p>  {# Show rent amount #}
+                        <p><strong>Lease Period:</strong> {{ lease.start_date }} to {{ lease.end_date }}</p>  {# Show lease dates #}
+                    {% else %}  {# If no lease #}
+                        <p>You don't have an active lease.</p>  {# Inform user #}
                     {% endif %}
                 </div>
             </div>
             
-            <div class="row mt-4">
-                <div class="col-md-6">
+            <div class="row mt-4">  {# Row for payments and maintenance #}
+                <div class="col-md-6">  {# Payments column #}
                     <div class="card">
                         <div class="card-header">
-                            <h5>Recent Payments</h5>
+                            <h5>Recent Payments</h5>  {# Payments section header #}
                         </div>
                         <div class="card-body">
-                            {% if payments %}
+                            {% if payments %}  {# If payments exist #}
                                 <ul class="list-group">
-                                    {% for payment in payments %}
+                                    {% for payment in payments %}  {# Loop through payments #}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ payment.payment_date }}
+                                            {{ payment.payment_date }}  {# Show payment date #}
                                             <span class="badge bg-{% if payment.is_confirmed %}success{% else %}warning{% endif %} rounded-pill">
-                                                KSh {{ payment.amount }}
+                                                KSh {{ payment.amount }}  {# Show payment amount and status #}
                                             </span>
                                         </li>
                                     {% endfor %}
                                 </ul>
-                            {% else %}
+                            {% else %}  {# If no payments #}
                                 <p>No payment history found.</p>
                             {% endif %}
-                            <a href="{% url 'payments:payment_history' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>
+                            <a href="{% url 'payments:payment_history' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>  {# Link to all payments #}
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6">  {# Maintenance column #}
                     <div class="card">
                         <div class="card-header">
-                            <h5>Recent Maintenance Requests</h5>
+                            <h5>Recent Maintenance Requests</h5>  {# Maintenance section header #}
                         </div>
                         <div class="card-body">
-                            {% if maintenance_requests %}
+                            {% if maintenance_requests %}  {# If requests exist #}
                                 <ul class="list-group">
-                                    {% for request in maintenance_requests %}
+                                    {% for request in maintenance_requests %}  {# Loop through requests #}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ request.issue|truncatechars:30 }}
+                                            {{ request.issue|truncatechars:30 }}  {# Show truncated issue #}
                                             <span class="badge bg-{{ request.get_status_color }} rounded-pill">
-                                                {{ request.get_status_display }}
+                                                {{ request.get_status_display }}  {# Show status #}
                                             </span>
                                         </li>
                                     {% endfor %}
                                 </ul>
-                            {% else %}
+                            {% else %}  {# If no requests #}
                                 <p>No maintenance requests found.</p>
                             {% endif %}
-                            <a href="{% url 'maintenance:request_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>
+                            <a href="{% url 'maintenance:request_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>  {# Link to all requests #}
                         </div>
                     </div>
                 </div>
             </div>
             
-        {% elif user.user_type == 'owner' %}
+        {% elif user.user_type == 'owner' %}  {# If the user is an owner #}
             <!-- Owner Dashboard -->
-            <div class="card mt-4">
+            <div class="card mt-4">  {# Card for properties #}
                 <div class="card-header">
-                    <h5>Your Properties</h5>
+                    <h5>Your Properties</h5>  {# Properties section header #}
                 </div>
                 <div class="card-body">
-                    {% if properties %}
+                    {% if properties %}  {# If properties exist #}
                         <div class="row">
-                            {% for property in properties %}
+                            {% for property in properties %}  {# Loop through properties #}
                                 <div class="col-md-6 mb-3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h6>{{ property.name }}</h6>
-                                            <p class="text-muted">{{ property.location }}</p>
-                                            <a href="{% url 'properties:property_detail' property.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                                            <h6>{{ property.name }}</h6>  {# Show property name #}
+                                            <p class="text-muted">{{ property.location }}</p>  {# Show property location #}
+                                            <a href="{% url 'properties:property_detail' property.id %}" class="btn btn-sm btn-outline-primary">View Details</a>  {# Link to property details #}
                                         </div>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
-                    {% else %}
+                    {% else %}  {# If no properties #}
                         <p>You don't have any properties listed yet.</p>
-                        <a href="{% url 'properties:property_create' %}" class="btn btn-primary">Add Property</a>
+                        <a href="{% url 'properties:property_create' %}" class="btn btn-primary">Add Property</a>  {# Link to add property #}
                     {% endif %}
                 </div>
             </div>
             
-            <div class="row mt-4">
-                <div class="col-md-6">
+            <div class="row mt-4">  {# Row for payments and maintenance #}
+                <div class="col-md-6">  {# Pending payments column #}
                     <div class="card">
                         <div class="card-header">
-                            <h5>Pending Rent Payments</h5>
+                            <h5>Pending Rent Payments</h5>  {# Pending payments header #}
                         </div>
                         <div class="card-body">
-                            {% if pending_payments %}
+                            {% if pending_payments %}  {# If pending payments exist #}
                                 <ul class="list-group">
-                                    {% for payment in pending_payments %}
+                                    {% for payment in pending_payments %}  {# Loop through pending payments #}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ payment.lease.tenant.get_full_name|default:payment.lease.tenant.username }}
+                                            {{ payment.lease.tenant.get_full_name|default:payment.lease.tenant.username }}  {# Show tenant name #}
                                             <span class="badge bg-warning rounded-pill">
-                                                KSh {{ payment.amount }}
+                                                KSh {{ payment.amount }}  {# Show payment amount #}
                                             </span>
                                         </li>
                                     {% endfor %}
                                 </ul>
-                            {% else %}
+                            {% else %}  {# If no pending payments #}
                                 <p>No pending payments.</p>
                             {% endif %}
-                            <a href="{% url 'payments:payment_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>
+                            <a href="{% url 'payments:payment_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>  {# Link to all payments #}
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6">  {# Pending maintenance column #}
                     <div class="card">
                         <div class="card-header">
-                            <h5>Pending Maintenance Requests</h5>
+                            <h5>Pending Maintenance Requests</h5>  {# Pending maintenance header #}
                         </div>
                         <div class="card-body">
-                            {% if pending_requests %}
+                            {% if pending_requests %}  {# If pending requests exist #}
                                 <ul class="list-group">
-                                    {% for request in pending_requests %}
+                                    {% for request in pending_requests %}  {# Loop through pending requests #}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ request.unit.property.name }} - Unit {{ request.unit.unit_number }}
+                                            {{ request.unit.property.name }} - Unit {{ request.unit.unit_number }}  {# Show property and unit #}
                                             <span class="badge bg-{{ request.get_priority_color }} rounded-pill">
-                                                {{ request.get_priority_display }}
+                                                {{ request.get_priority_display }}  {# Show priority #}
                                             </span>
                                         </li>
                                     {% endfor %}
                                 </ul>
-                            {% else %}
+                            {% else %}  {# If no pending requests #}
                                 <p>No pending maintenance requests.</p>
                             {% endif %}
-                            <a href="{% url 'maintenance:request_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>
+                            <a href="{% url 'maintenance:request_list' %}" class="btn btn-sm btn-outline-primary mt-3">View All</a>  {# Link to all requests #}
                         </div>
                     </div>
                 </div>
@@ -158,30 +158,30 @@
         {% endif %}
     </div>
     
-    <div class="col-md-4">
+    <div class="col-md-4">  {# Sidebar column #}
         <div class="card">
             <div class="card-header">
-                <h5>Quick Actions</h5>
+                <h5>Quick Actions</h5>  {# Quick actions header #}
             </div>
             <div class="card-body">
-                {% if user.user_type == 'tenant' %}
+                {% if user.user_type == 'tenant' %}  {# Tenant quick actions #}
                     <a href="{% url 'payments:make_payment' %}" class="btn btn-primary w-100 mb-2">Pay Rent</a>
                     <a href="{% url 'maintenance:create_request' %}" class="btn btn-outline-primary w-100 mb-2">Report Issue</a>
-                {% elif user.user_type == 'owner' %}
+                {% elif user.user_type == 'owner' %}  {# Owner quick actions #}
                     <a href="{% url 'properties:property_create' %}" class="btn btn-primary w-100 mb-2">Add Property</a>
                     <a href="{% url 'properties:unit_create' %}" class="btn btn-outline-primary w-100 mb-2">Add Unit</a>
                 {% endif %}
-                <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary w-100">Update Profile</a>
+                <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary w-100">Update Profile</a>  {# Link to update profile #}
             </div>
         </div>
         
-        {% if user.user_type == 'owner' %}
+        {% if user.user_type == 'owner' %}  {# Owner-only vacancy chart #}
             <div class="card mt-4">
                 <div class="card-header">
-                    <h5>Vacancy Status</h5>
+                    <h5>Vacancy Status</h5>  {# Vacancy status header #}
                 </div>
                 <div class="card-body">
-                    <canvas id="vacancyChart" width="100%" height="200"></canvas>
+                    <canvas id="vacancyChart" width="100%" height="200"></canvas>  {# Chart.js canvas #}
                 </div>
             </div>
         {% endif %}
@@ -189,34 +189,34 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
-{% if user.user_type == 'owner' %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block scripts %}  {# Scripts block for extra JS #}
+{% if user.user_type == 'owner' %}  {# Only for owners #}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  {# Load Chart.js #}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('vacancyChart').getContext('2d');
-        const vacancyChart = new Chart(ctx, {
+    document.addEventListener('DOMContentLoaded', function() {  // Wait for DOM to load
+        const ctx = document.getElementById('vacancyChart').getContext('2d');  // Get canvas context
+        const vacancyChart = new Chart(ctx, {  // Create new Chart.js doughnut chart
             type: 'doughnut',
             data: {
-                labels: ['Occupied', 'Vacant'],
+                labels: ['Occupied', 'Vacant'],  // Chart labels
                 datasets: [{
-                    data: [{{ occupied_units_count }}, {{ vacant_units_count }}],
+                    data: [{{ occupied_units_count }}, {{ vacant_units_count }}],  // Data from context
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',  // Occupied color
+                        'rgba(255, 99, 132, 0.7)',  // Vacant color
                     ],
                     borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',  // Occupied border
+                        'rgba(255, 99, 132, 1)',  // Vacant border
                     ],
-                    borderWidth: 1
+                    borderWidth: 1  // Border width
                 }]
             },
             options: {
-                responsive: true,
+                responsive: true,  // Responsive chart
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'bottom',  // Legend position
                     }
                 }
             }

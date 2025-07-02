@@ -1,41 +1,41 @@
-{% extends 'base.html' %}
-{% block title %}Property Details{% endblock %}
-{% block content %}
-<div class="max-w-3xl mx-auto mt-8">
-  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-    <h2 class="text-2xl font-bold text-black mb-1">{{ property.name }}</h2>
-    <h5 class="text-gray-700 mb-2">{{ property.location }}</h5>
-    <p class="text-gray-800 mb-4">{{ property.description }}</p>
-    <ul class="mb-4 text-sm text-gray-700 space-y-1">
-      <li>Vacant Units: <span class="font-semibold">{{ vacant_units }}</span></li>
-      <li>Occupied Units: <span class="font-semibold">{{ occupied_units }}</span></li>
-      <li>Units with Paid Rent: <span class="font-semibold">{{ paid_units }}</span></li>
-      <li>Units with Unpaid Rent: <span class="font-semibold">{{ unpaid_units }}</span></li>
-      <li>Maintenance Requests: <span class="font-semibold">{{ maintenance_requests }}</span></li>
-      <li>Total Rent Paid: <span class="font-semibold">${{ total_rent_paid }}</span></li>
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Property Details{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the main content block #}
+<div class="max-w-3xl mx-auto mt-8">  {# Container with max width, centered, margin top #}
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Card for property info #}
+    <h2 class="text-2xl font-bold text-black mb-1">{{ property.name }}</h2>  {# Property name #}
+    <h5 class="text-gray-700 mb-2">{{ property.location }}</h5>  {# Property location #}
+    <p class="text-gray-800 mb-4">{{ property.description }}</p>  {# Property description #}
+    <ul class="mb-4 text-sm text-gray-700 space-y-1">  {# List of property stats #}
+      <li>Vacant Units: <span class="font-semibold">{{ vacant_units }}</span></li>  {# Number of vacant units #}
+      <li>Occupied Units: <span class="font-semibold">{{ occupied_units }}</span></li>  {# Number of occupied units #}
+      <li>Units with Paid Rent: <span class="font-semibold">{{ paid_units }}</span></li>  {# Units with paid rent #}
+      <li>Units with Unpaid Rent: <span class="font-semibold">{{ unpaid_units }}</span></li>  {# Units with unpaid rent #}
+      <li>Maintenance Requests: <span class="font-semibold">{{ maintenance_requests }}</span></li>  {# Maintenance requests count #}
+      <li>Total Rent Paid: <span class="font-semibold">${{ total_rent_paid }}</span></li>  {# Total rent paid #}
     </ul>
-    <div class="flex flex-wrap gap-2 mb-4">
-      <a href="{% url 'properties:invite_tenant_property' property.pk %}" class="border border-primary text-black font-semibold rounded px-3 py-1 hover:bg-primary hover:text-black transition">Invite Tenant</a>
-      <a href="{% url 'properties:add_unit' property.pk %}" class="border border-primary text-black font-semibold rounded px-3 py-1 hover:bg-primary hover:text-black transition">Add Unit</a>
+    <div class="flex flex-wrap gap-2 mb-4">  {# Button group for actions #}
+      <a href="{% url 'properties:invite_tenant_property' property.pk %}" class="border border-primary text-black font-semibold rounded px-3 py-1 hover:bg-primary hover:text-black transition">Invite Tenant</a>  {# Link to invite tenant #}
+      <a href="{% url 'properties:add_unit' property.pk %}" class="border border-primary text-black font-semibold rounded px-3 py-1 hover:bg-primary hover:text-black transition">Add Unit</a>  {# Link to add unit #}
     </div>
   </div>
-  <div class="mb-6">
-    <h4 class="text-lg font-bold text-black mb-2">Units</h4>
-    {% if units %}
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% for unit in units %}
-          <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
-            <h5 class="font-semibold text-black mb-1">Unit {{ unit.unit_number }}</h5>
-            <p class="text-sm text-gray-700">Bedrooms: {{ unit.bedrooms }}</p>
-            <p class="text-sm text-gray-700">Status: {{ unit.status|title }}</p>
-            <p class="text-sm text-gray-700">Rent Amount: ${{ unit.rent_amount }}</p>
+  <div class="mb-6">  {# Section for units list #}
+    <h4 class="text-lg font-bold text-black mb-2">Units</h4>  {# Units section heading #}
+    {% if units %}  {# Check if there are units #}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  {# Responsive grid for units #}
+        {% for unit in units %}  {# Loop through each unit #}
+          <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">  {# Card for each unit #}
+            <h5 class="font-semibold text-black mb-1">Unit {{ unit.unit_number }}</h5>  {# Unit number #}
+            <p class="text-sm text-gray-700">Bedrooms: {{ unit.bedrooms }}</p>  {# Number of bedrooms #}
+            <p class="text-sm text-gray-700">Status: {{ unit.status|title }}</p>  {# Unit status (capitalized) #}
+            <p class="text-sm text-gray-700">Rent Amount: ${{ unit.rent_amount }}</p>  {# Rent amount #}
           </div>
-        {% endfor %}
+        {% endfor %}  {# End unit loop #}
       </div>
-    {% else %}
-      <p class="text-gray-700">No units found for this property.</p>
+    {% else %}  {# If no units exist #}
+      <p class="text-gray-700">No units found for this property.</p>  {# Message for no units #}
     {% endif %}
   </div>
-  <a href="{% url 'properties:property_list' %}" class="inline-block border border-gray-700 text-gray-700 font-semibold rounded px-4 py-2 hover:bg-gray-100 transition">Back to Properties</a>
+  <a href="{% url 'properties:property_list' %}" class="inline-block border border-gray-700 text-gray-700 font-semibold rounded px-4 py-2 hover:bg-gray-100 transition">Back to Properties</a>  {# Link to go back to property list #}
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}

@@ -1,89 +1,89 @@
-{% extends 'base.html' %}
-{% block title %}Owner Dashboard{% endblock %}
-{% block content %}
-{% if notifications %}
-  <div class="mb-6">
-    <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded shadow text-black">
-      <h3 class="font-bold mb-2">Maintenance Notifications</h3>
-      <ul class="space-y-2">
-        {% for note in notifications %}
-          <li>
-            <a href="{{ note.url }}" class="font-semibold text-primary hover:underline">{{ note.message }}</a>
-            <span class="text-xs text-gray-600 ml-2">{{ note.created_at|date:"M d, H:i" }}</span>
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Owner Dashboard{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the content block #}
+{% if notifications %}  {# If there are notifications to show #}
+  <div class="mb-6">  {# Margin bottom for spacing #}
+    <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded shadow text-black">  {# Styled notification box #}
+      <h3 class="font-bold mb-2">Maintenance Notifications</h3>  {# Notification heading #}
+      <ul class="space-y-2">  {# List with vertical spacing #}
+        {% for note in notifications %}  {# Loop through each notification #}
+          <li>  {# List item for each notification #}
+            <a href="{{ note.url }}" class="font-semibold text-primary hover:underline">{{ note.message }}</a>  {# Notification message as a link #}
+            <span class="text-xs text-gray-600 ml-2">{{ note.created_at|date:"M d, H:i" }}</span>  {# Notification timestamp #}
           </li>
-        {% endfor %}
+        {% endfor %}  {# End notifications loop #}
       </ul>
     </div>
   </div>
-{% endif %}
-<div class="flex flex-col items-center justify-center min-h-[70vh] py-10">
-  <h2 class="text-3xl font-extrabold text-black mb-2 text-center">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
-  <p class="text-lg text-gray-700 mb-8 text-center">Manage your properties, view statistics, and grow your rental business with RentHive.</p>
-  <div class="w-full max-w-4xl mb-10">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">
-        <span class="text-4xl font-bold text-primary mb-2">{{ total_properties }}</span>
-        <span class="text-gray-700 font-semibold">Total Properties</span>
+{% endif %}  {# End notifications section #}
+<div class="flex flex-col items-center justify-center min-h-[70vh] py-10">  {# Centered flex container for main content #}
+  <h2 class="text-3xl font-extrabold text-black mb-2 text-center">Welcome, {{ user.get_full_name|default:user.username }}!</h2>  {# Welcome message with user's name #}
+  <p class="text-lg text-gray-700 mb-8 text-center">Manage your properties, view statistics, and grow your rental business with RentHive.</p>  {# Introductory text #}
+  <div class="w-full max-w-4xl mb-10">  {# Container for statistics cards #}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">  {# Responsive grid for stats #}
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">  {# Card for total properties #}
+        <span class="text-4xl font-bold text-primary mb-2">{{ total_properties }}</span>  {# Total properties count #}
+        <span class="text-gray-700 font-semibold">Total Properties</span>  {# Label #}
       </div>
-      {% if selected_property %}
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">
-        <span class="text-4xl font-bold text-primary mb-2">{{ vacant_units }}</span>
-        <span class="text-gray-700 font-semibold">Vacant Units</span>
+      {% if selected_property %}  {# If a property is selected, show more stats #}
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">  {# Card for vacant units #}
+        <span class="text-4xl font-bold text-primary mb-2">{{ vacant_units }}</span>  {# Vacant units count #}
+        <span class="text-gray-700 font-semibold">Vacant Units</span>  {# Label #}
       </div>
-      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">
-        <span class="text-4xl font-bold text-primary mb-2">{{ occupied_units }}</span>
-        <span class="text-gray-700 font-semibold">Occupied Units</span>
+      <div class="bg-white rounded-lg shadow border border-gray-200 p-6 flex flex-col items-center">  {# Card for occupied units #}
+        <span class="text-4xl font-bold text-primary mb-2">{{ occupied_units }}</span>  {# Occupied units count #}
+        <span class="text-gray-700 font-semibold">Occupied Units</span>  {# Label #}
       </div>
-      {% endif %}
+      {% endif %}  {# End selected property stats #}
     </div>
   </div>
-  <div class="w-full max-w-4xl">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-2xl font-bold text-black">Your Properties</h3>
-      <a href="{% url 'properties:property_create' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Add Property</a>
+  <div class="w-full max-w-4xl">  {# Container for properties list #}
+    <div class="flex items-center justify-between mb-4">  {# Header with title and add button #}
+      <h3 class="text-2xl font-bold text-black">Your Properties</h3>  {# Section title #}
+      <a href="{% url 'properties:property_create' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Add Property</a>  {# Button to add a property #}
     </div>
-    {% if properties %}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for property in properties %}
-          <div class="bg-white rounded-lg shadow border border-gray-200 flex flex-col h-full">
-            <div class="p-5 flex-1 flex flex-col">
-              <h4 class="text-lg font-bold text-black mb-1">{{ property.name }}</h4>
-              <p class="text-sm text-gray-700 mb-2">{{ property.location }}</p>
-              <p class="text-gray-800 text-sm mb-4">{{ property.description|truncatewords:20 }}</p>
-              <a href="{% url 'users:profile' %}?property={{ property.pk }}" class="w-full border border-primary text-black font-semibold rounded py-1 hover:bg-primary hover:text-black transition text-center">View Statistics</a>
+    {% if properties %}  {# If there are properties to show #}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">  {# Responsive grid for property cards #}
+        {% for property in properties %}  {# Loop through each property #}
+          <div class="bg-white rounded-lg shadow border border-gray-200 flex flex-col h-full">  {# Card for a property #}
+            <div class="p-5 flex-1 flex flex-col">  {# Card content #}
+              <h4 class="text-lg font-bold text-black mb-1">{{ property.name }}</h4>  {# Property name #}
+              <p class="text-sm text-gray-700 mb-2">{{ property.location }}</p>  {# Property location #}
+              <p class="text-gray-800 text-sm mb-4">{{ property.description|truncatewords:20 }}</p>  {# Short property description #}
+              <a href="{% url 'users:profile' %}?property={{ property.pk }}" class="w-full border border-primary text-black font-semibold rounded py-1 hover:bg-primary hover:text-black transition text-center">View Statistics</a>  {# Link to view property stats #}
             </div>
           </div>
-        {% endfor %}
+        {% endfor %}  {# End properties loop #}
       </div>
-    {% else %}
-      <p class="text-gray-700">You have no properties yet.</p>
-    {% endif %}
+    {% else %}  {# If no properties exist #}
+      <p class="text-gray-700">You have no properties yet.</p>  {# Message for no properties #}
+    {% endif %}  {# End properties section #}
   </div>
-  {% if selected_property %}
-    <div class="w-full max-w-2xl mt-10">
-      <h3 class="text-xl font-bold text-black mb-4">Statistics for {{ selected_property.name }}</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
-          <span class="block text-lg font-bold text-black">Vacant Units</span>
-          <span class="text-2xl font-extrabold text-primary">{{ vacant_units }}</span>
+  {% if selected_property %}  {# If a property is selected, show detailed stats #}
+    <div class="w-full max-w-2xl mt-10">  {# Container for property statistics #}
+      <h3 class="text-xl font-bold text-black mb-4">Statistics for {{ selected_property.name }}</h3>  {# Section title with property name #}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">  {# Responsive grid for statistics #}
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">  {# Card for vacant units #}
+          <span class="block text-lg font-bold text-black">Vacant Units</span>  {# Label #}
+          <span class="text-2xl font-extrabold text-primary">{{ vacant_units }}</span>  {# Vacant units count #}
         </div>
-        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
-          <span class="block text-lg font-bold text-black">Occupied Units</span>
-          <span class="text-2xl font-extrabold text-primary">{{ occupied_units }}</span>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">  {# Card for occupied units #}
+          <span class="block text-lg font-bold text-black">Occupied Units</span>  {# Label #}
+          <span class="text-2xl font-extrabold text-primary">{{ occupied_units }}</span>  {# Occupied units count #}
         </div>
-        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
-          <span class="block text-lg font-bold text-black">Units with Paid Rent</span>
-          <span class="text-2xl font-extrabold text-primary">{{ paid_units }}</span>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">  {# Card for paid units #}
+          <span class="block text-lg font-bold text-black">Units with Paid Rent</span>  {# Label #}
+          <span class="text-2xl font-extrabold text-primary">{{ paid_units }}</span>  {# Paid units count #}
         </div>
-        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">
-          <span class="block text-lg font-bold text-black">Units with Outstanding Rent</span>
-          <span class="text-2xl font-extrabold text-primary">{{ unpaid_units }}</span>
+        <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">  {# Card for unpaid units #}
+          <span class="block text-lg font-bold text-black">Units with Outstanding Rent</span>  {# Label #}
+          <span class="text-2xl font-extrabold text-primary">{{ unpaid_units }}</span>  {# Unpaid units count #}
         </div>
       </div>
     </div>
-  {% endif %}
-  <div class="mb-6 mt-10">
-    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>
+  {% endif %}  {# End selected property statistics #}
+  <div class="mb-6 mt-10">  {# Spacing for maintenance requests button #}
+    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>  {# Button to view all maintenance requests #}
   </div>
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}

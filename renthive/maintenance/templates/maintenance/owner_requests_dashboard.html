@@ -1,58 +1,58 @@
-{% extends 'base.html' %}
-{% block title %}Maintenance Requests{% endblock %}
-{% block content %}
-<div class="max-w-4xl mx-auto py-8">
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">All Maintenance Requests</h2>
-    <a href="{% url 'maintenance:maintenance_report_csv' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Download Report (CSV)</a>
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Maintenance Requests{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the content block #}
+<div class="max-w-4xl mx-auto py-8">  {# Container div with max width and padding #}
+  <div class="flex justify-between items-center mb-6">  {# Flexbox for header and button #}
+    <h2 class="text-2xl font-bold">All Maintenance Requests</h2>  {# Page heading #}
+    <a href="{% url 'maintenance:maintenance_report_csv' %}" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Download Report (CSV)</a>  {# Link to download CSV report #}
   </div>
-  <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-    <thead class="bg-gray-100">
+  <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">  {# Table for requests #}
+    <thead class="bg-gray-100">  {# Table header section #}
       <tr>
-        <th class="px-4 py-2">Unit</th>
-        <th class="px-4 py-2">Issue</th>
-        <th class="px-4 py-2">Priority</th>
-        <th class="px-4 py-2">Status</th>
-        <th class="px-4 py-2">Assigned To</th>
-        <th class="px-4 py-2">Actions</th>
+        <th class="px-4 py-2">Unit</th>  {# Column: Unit #}
+        <th class="px-4 py-2">Issue</th>  {# Column: Issue #}
+        <th class="px-4 py-2">Priority</th>  {# Column: Priority #}
+        <th class="px-4 py-2">Status</th>  {# Column: Status #}
+        <th class="px-4 py-2">Assigned To</th>  {# Column: Assigned To #}
+        <th class="px-4 py-2">Actions</th>  {# Column: Actions #}
       </tr>
     </thead>
     <tbody>
-      {% for req in requests %}
+      {% for req in requests %}  {# Loop through each maintenance request #}
       <tr class="border-t">
-        <td class="px-4 py-2">{{ req.unit.property.name }} - {{ req.unit.unit_number }}</td>
-        <td class="px-4 py-2">{{ req.issue|truncatechars:40 }}</td>
-        <td class="px-4 py-2">{{ req.get_priority_display }}</td>
-        <td class="px-4 py-2">{{ req.get_status_display }}</td>
-        <td class="px-4 py-2">{{ req.assigned_to|default:'-' }}</td>
+        <td class="px-4 py-2">{{ req.unit.property.name }} - {{ req.unit.unit_number }}</td>  {# Show property and unit number #}
+        <td class="px-4 py-2">{{ req.issue|truncatechars:40 }}</td>  {# Show truncated issue description #}
+        <td class="px-4 py-2">{{ req.get_priority_display }}</td>  {# Show human-readable priority #}
+        <td class="px-4 py-2">{{ req.get_status_display }}</td>  {# Show human-readable status #}
+        <td class="px-4 py-2">{{ req.assigned_to|default:'-' }}</td>  {# Show assigned person or dash if none #}
         <td class="px-4 py-2">
-          <form method="post" class="inline">
-            {% csrf_token %}
-            <input type="hidden" name="request_id" value="{{ req.id }}">
-            <select name="status" class="border rounded px-2 py-1">
-              <option value="pending" {% if req.status == 'pending' %}selected{% endif %}>Pending</option>
-              <option value="in_progress" {% if req.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-              <option value="completed" {% if req.status == 'completed' %}selected{% endif %}>Completed</option>
+          <form method="post" class="inline">  {# Form to update status #}
+            {% csrf_token %}  {# CSRF protection token #}
+            <input type="hidden" name="request_id" value="{{ req.id }}">  {# Hidden field for request ID #}
+            <select name="status" class="border rounded px-2 py-1">  {# Dropdown for status selection #}
+              <option value="pending" {% if req.status == 'pending' %}selected{% endif %}>Pending</option>  {# Pending option #}
+              <option value="in_progress" {% if req.status == 'in_progress' %}selected{% endif %}>In Progress</option>  {# In Progress option #}
+              <option value="completed" {% if req.status == 'completed' %}selected{% endif %}>Completed</option>  {# Completed option #}
             </select>
-            <button type="submit" name="action" value="update_status" class="ml-2 bg-primary text-black px-2 py-1 rounded">Update</button>
+            <button type="submit" name="action" value="update_status" class="ml-2 bg-primary text-black px-2 py-1 rounded">Update</button>  {# Submit button for status update #}
           </form>
-          <form method="post" class="inline ml-2">
-            {% csrf_token %}
-            <input type="hidden" name="request_id" value="{{ req.id }}">
-            <input type="text" name="assigned_to" placeholder="Assign to..." value="{{ req.assigned_to }}" class="border rounded px-2 py-1 w-24">
-            <button type="submit" name="action" value="assign" class="ml-1 bg-primary text-black px-2 py-1 rounded">Assign</button>
+          <form method="post" class="inline ml-2">  {# Form to assign request #}
+            {% csrf_token %}  {# CSRF protection token #}
+            <input type="hidden" name="request_id" value="{{ req.id }}">  {# Hidden field for request ID #}
+            <input type="text" name="assigned_to" placeholder="Assign to..." value="{{ req.assigned_to }}" class="border rounded px-2 py-1 w-24">  {# Input for assignee #}
+            <button type="submit" name="action" value="assign" class="ml-1 bg-primary text-black px-2 py-1 rounded">Assign</button>  {# Submit button for assignment #}
           </form>
-          <form method="post" class="inline ml-2">
-            {% csrf_token %}
-            <input type="hidden" name="request_id" value="{{ req.id }}">
-            <button type="submit" name="action" value="mark_resolved" class="bg-green-500 text-white px-2 py-1 rounded">Mark Resolved</button>
+          <form method="post" class="inline ml-2">  {# Form to mark as resolved #}
+            {% csrf_token %}  {# CSRF protection token #}
+            <input type="hidden" name="request_id" value="{{ req.id }}">  {# Hidden field for request ID #}
+            <button type="submit" name="action" value="mark_resolved" class="bg-green-500 text-white px-2 py-1 rounded">Mark Resolved</button>  {# Submit button to mark resolved #}
           </form>
         </td>
       </tr>
-      {% empty %}
-      <tr><td colspan="6" class="text-center py-4 text-gray-500">No requests found.</td></tr>
+      {% empty %}  {# If no requests exist #}
+      <tr><td colspan="6" class="text-center py-4 text-gray-500">No requests found.</td></tr>  {# Show message if no requests #}
       {% endfor %}
     </tbody>
   </table>
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}

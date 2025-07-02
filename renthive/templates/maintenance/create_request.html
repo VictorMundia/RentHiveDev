@@ -1,26 +1,26 @@
-{% extends 'base.html' %}
-{% block title %}Submit Maintenance Request{% endblock %}
-{% block content %}
-<div class="flex flex-col items-center justify-center min-h-[60vh] py-10">
-  <div class="bg-white rounded-lg shadow border border-gray-200 p-8 w-full max-w-md">
-    <h2 class="text-2xl font-bold text-black mb-4 text-center">Submit Maintenance Request</h2>
-    <form method="post" class="space-y-4">
-      {% csrf_token %}
+{% extends 'base.html' %}  {# Inherit from the base template #}
+{% block title %}Submit Maintenance Request{% endblock %}  {# Set the page title #}
+{% block content %}  {# Start the content block #}
+<div class="flex flex-col items-center justify-center min-h-[60vh] py-10">  {# Center the content vertically and horizontally #}
+  <div class="bg-white rounded-lg shadow border border-gray-200 p-8 w-full max-w-md">  {# Card container with styling #}
+    <h2 class="text-2xl font-bold text-black mb-4 text-center">Submit Maintenance Request</h2>  {# Page heading #}
+    <form method="post" class="space-y-4">  {# Start form, POST method, vertical spacing between fields #}
+      {% csrf_token %}  {# CSRF protection token #}
       <div>
-        <label for="{{ form.issue.id_for_label }}" class="block font-semibold text-gray-700 mb-1">{{ form.issue.label }}</label>
-        {{ form.issue }}
-        {% if form.issue.help_text %}<p class="text-xs text-gray-500">{{ form.issue.help_text }}</p>{% endif %}
-        {% for error in form.issue.errors %}<p class="text-xs text-red-600">{{ error }}</p>{% endfor %}
+        <label for="{{ form.issue.id_for_label }}" class="block font-semibold text-gray-700 mb-1">{{ form.issue.label }}</label>  {# Label for the 'issue' field #}
+        {{ form.issue }}  {# Render the 'issue' input field #}
+        {% if form.issue.help_text %}<p class="text-xs text-gray-500">{{ form.issue.help_text }}</p>{% endif %}  {# Show help text if available #}
+        {% for error in form.issue.errors %}<p class="text-xs text-red-600">{{ error }}</p>{% endfor %}  {# Display validation errors for 'issue' #}
       </div>
       <div>
-        <label for="{{ form.priority.id_for_label }}" class="block font-semibold text-gray-700 mb-1">{{ form.priority.label }}</label>
-        {{ form.priority }}
-        {% if form.priority.help_text %}<p class="text-xs text-gray-500">{{ form.priority.help_text }}</p>{% endif %}
-        {% for error in form.priority.errors %}<p class="text-xs text-red-600">{{ error }}</p>{% endfor %}
+        <label for="{{ form.priority.id_for_label }}" class="block font-semibold text-gray-700 mb-1">{{ form.priority.label }}</label>  {# Label for the 'priority' field #}
+        {{ form.priority }}  {# Render the 'priority' input field #}
+        {% if form.priority.help_text %}<p class="text-xs text-gray-500">{{ form.priority.help_text }}</p>{% endif %}  {# Show help text if available #}
+        {% for error in form.priority.errors %}<p class="text-xs text-red-600">{{ error }}</p>{% endfor %}  {# Display validation errors for 'priority' #}
       </div>
-      <button type="submit" class="w-full bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Submit Request</button>
+      <button type="submit" class="w-full bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Submit Request</button>  {# Submit button with styling #}
     </form>
-    <a href="{% url 'users:tenant_profile' %}" class="block text-center text-primary mt-4 hover:underline">Back to Profile</a>
+    <a href="{% url 'users:tenant_profile' %}" class="block text-center text-primary mt-4 hover:underline">Back to Profile</a>  {# Link to go back to tenant profile #}
   </div>
 </div>
-{% endblock %}
+{% endblock %}  {# End content block #}
