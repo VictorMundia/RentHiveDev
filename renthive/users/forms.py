@@ -1,6 +1,16 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from users.models import User
+from users.models_bank import OwnerBankAccount
+class OwnerBankAccountForm(forms.ModelForm):
+    class Meta:
+        model = OwnerBankAccount
+        fields = ['bank_name', 'account_number', 'account_name', 'branch']
+from users.models_bank import OwnerBankAccount
+class OwnerBankAccountForm(forms.ModelForm):
+    class Meta:
+        model = OwnerBankAccount
+        fields = ['bank_name', 'account_number', 'account_name', 'branch']
 
 class RegisterForm(UserCreationForm):
     id_number = forms.CharField(max_length=20, required=True, label="ID Number")

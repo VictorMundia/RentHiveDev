@@ -9,6 +9,7 @@ urlpatterns = [
     path('owner/chats/', views.owner_maintenance_chats, name='owner_chats'),
     path('owner/chat/<int:chat_id>/', views.owner_maintenance_chat_detail, name='owner_chat_detail'),
     path('owner/requests/', views.owner_requests_dashboard, name='owner_requests_dashboard'),
+    path('owner/maintenance-report/', views.maintenance_report_csv, name='maintenance_report_csv'),
     path('confirm/<int:req_id>/', views.confirm_maintenance_resolution, name='confirm_resolution'),
     path('my-requests/', views.tenant_requests_list, name='tenant_requests_list'),
 ]

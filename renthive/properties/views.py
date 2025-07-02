@@ -1,3 +1,24 @@
+from users.models_bank import OwnerBankAccount
+from django.contrib import messages
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+
+from .models import Property, Unit
+from .forms import PropertyForm, UnitForm, TenantInviteForm
+from payments.models import Payment
+from maintenance.models import MaintenanceRequest
+from django.db.models import Sum
+from django.core.mail import send_mail, EmailMessage
+
+@login_required
+def property_create(request):
+    if request.user.user_type == 'owner':
+        if not hasattr(request.user, 'bank_account'):
+            messages.warning(request, "Please add your bank/account details before adding a property.")
+            return redirect('users:owner_bank_details')
+    # ...existing property creation logic...
+    # You will need to insert the rest of your property creation logic here
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages

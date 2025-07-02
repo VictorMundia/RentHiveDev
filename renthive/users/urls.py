@@ -12,4 +12,5 @@ urlpatterns = [
     path('lipa-na-mpesa/', views.lipa_na_mpesa, name='lipa_na_mpesa'),
     path('card-payment/', views.card_payment, name='card_payment'),
     path('bank-transfer/', views.bank_transfer, name='bank_transfer'),
+    path('owner/bank-details/', views.owner_bank_details, name='owner_bank_details'),
 ]

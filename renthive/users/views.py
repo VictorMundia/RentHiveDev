@@ -1,3 +1,65 @@
+from users.forms import OwnerBankAccountForm
+from users.models_bank import OwnerBankAccount
+from django.contrib import messages
+from django.contrib.auth import logout, login
+from django.urls import reverse
+from django.http import HttpResponseRedirect, JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from properties.models import Lease, Unit, Property
+from payments.models import Payment
+from maintenance.models import MaintenanceRequest
+from .forms import RegisterForm
+from django.utils import timezone
+from django.db import models
+from django.core.mail import send_mail
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+import json
+from payments.mpesa import stk_push
+
+@login_required
+def owner_bank_details(request):
+    if not request.user.user_type == 'owner':
+        return redirect('users:dashboard')
+    try:
+        bank_account = request.user.bank_account
+        form = OwnerBankAccountForm(instance=bank_account)
+    except OwnerBankAccount.DoesNotExist:
+        form = OwnerBankAccountForm()
+    if request.method == 'POST':
+        form = OwnerBankAccountForm(request.POST, instance=getattr(request.user, 'bank_account', None))
+        if form.is_valid():
+            bank = form.save(commit=False)
+            bank.owner = request.user
+            bank.save()
+            messages.success(request, "Bank details saved successfully.")
+            return redirect('users:profile')
+    return render(request, 'users/owner_bank_details.html', {'form': form})
+from users.forms import OwnerBankAccountForm
+from users.models_bank import OwnerBankAccount
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+@login_required
+def owner_bank_details(request):
+    if not request.user.user_type == 'owner':
+        return redirect('users:dashboard')
+    try:
+        bank_account = request.user.bank_account
+        form = OwnerBankAccountForm(instance=bank_account)
+    except OwnerBankAccount.DoesNotExist:
+        form = OwnerBankAccountForm()
+    if request.method == 'POST':
+        form = OwnerBankAccountForm(request.POST, instance=getattr(request.user, 'bank_account', None))
+        if form.is_valid():
+            bank = form.save(commit=False)
+            bank.owner = request.user
+            bank.save()
+            messages.success(request, "Bank details saved successfully.")
+            return redirect('users:profile')
+    return render(request, 'users/owner_bank_details.html', {'form': form})
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -119,7 +181,19 @@ def register(request):
             if invited_unit and form.cleaned_data.get('user_type') == 'tenant':
                 invited_unit.status = 'occupied'
                 invited_unit.save()
-                Lease.objects.create(
+            login(request, user)
+            # If owner, redirect to bank details page
+            if user.user_type == 'owner':
+                return redirect('users:owner_bank_details')
+            return redirect('users:profile')
+            invited_unit.save()
+            login(request, user)
+            # If owner, redirect to bank details page
+            if user.user_type == 'owner':
+                return redirect('users:owner_bank_details')
+            return redirect('users:profile')
+            invited_unit.save()
+            Lease.objects.create(
                     unit=invited_unit,
                     tenant=user,
                     start_date=timezone.now().date(),

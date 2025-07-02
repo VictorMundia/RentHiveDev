@@ -7,6 +7,8 @@ from users.models import User, Notification
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+import csv
+from django.http import HttpResponse
 
 # Create your views here.
 @login_required
@@ -137,3 +139,29 @@ def confirm_maintenance_resolution(request, req_id):
 def tenant_requests_list(request):
     requests = MaintenanceRequest.objects.filter(requested_by=request.user).order_by('-created_at')
     return render(request, 'maintenance/tenant_requests_list.html', {'requests': requests})
+
+@login_required
+def maintenance_report_csv(request):
+    if not request.user.user_type == 'owner':
+        return redirect('users:dashboard')
+    units = Unit.objects.filter(property__owner=request.user)
+    requests_qs = MaintenanceRequest.objects.filter(unit__in=units).order_by('-created_at')
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="maintenance_report.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'Property', 'Unit', 'Issue', 'Priority', 'Status', 'Assigned To', 'Resolved By', 'Tenant Confirmed', 'Feedback', 'Rating'])
+    for req in requests_qs:
+        writer.writerow([
+            req.created_at.strftime('%Y-%m-%d %H:%M'),
+            req.unit.property.name,
+            req.unit.unit_number,
+            req.issue,
+            req.get_priority_display(),
+            req.get_status_display(),
+            req.assigned_to or '',
+            req.resolved_by.get_full_name() if req.resolved_by else '',
+            'Yes' if req.tenant_confirmed else 'No',
+            req.tenant_feedback or '',
+            req.feedback_rating or ''
+        ])
+    return response
