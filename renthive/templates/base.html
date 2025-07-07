@@ -34,14 +34,21 @@
     </a>
     <div class="space-x-4 flex items-center">  {# Container for navigation links #}
       {% if user.is_authenticated and user.user_type == 'tenant' %}  {# If user is logged in as tenant #}
-      <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
-      <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">My Profile</a>  {# Tenant profile link #}
-      <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>  {# Logout link #}
+      <a href="/" class="text-white hover:text-primary">Home</a>
+      <a href="/properties/" class="text-white hover:text-primary">Properties</a>
+      <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">Profile</a>
+      <form method="post" action="{% url 'logout' %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="text-white hover:text-primary bg-transparent border-0 p-0 m-0 cursor-pointer">Logout</button>
+      </form>
       {% elif user.is_authenticated and user.user_type == 'owner' %}  {# If user is logged in as owner #}
-      <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
-      <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}
-      <a href="/users/profile/" class="text-white hover:text-primary">Profile</a>  {# Owner profile link #}
-      <a href="{% url 'logout' %}" class="text-white hover:text-primary">Logout</a>  {# Logout link #}
+      <a href="/" class="text-white hover:text-primary">Home</a>
+      <a href="/properties/" class="text-white hover:text-primary">Properties</a>
+      <a href="/users/profile/" class="text-white hover:text-primary">Profile</a>
+      <form method="post" action="{% url 'logout' %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="text-white hover:text-primary bg-transparent border-0 p-0 m-0 cursor-pointer">Logout</button>
+      </form>
       {% else %}  {# If user is not authenticated #}
       <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
       <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}

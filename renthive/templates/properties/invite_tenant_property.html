@@ -1,4 +1,5 @@
 {% extends 'base.html' %}  {# Inherit from the base template #}
+{% load form_extras %}
 {% block title %}Invite Tenant to Property{% endblock %}  {# Set the page title #}
 {% block content %}  {# Start the content block #}
 <div class="flex flex-col items-center justify-center min-h-[60vh] py-8">  {# Center content vertically and horizontally #}
@@ -11,15 +12,18 @@
     {% endif %}  {# End error check #}
     <form method="post" class="space-y-5">  {# Start the form, POST method #}
       {% csrf_token %}  {# CSRF protection token #}
-      {% for field in form %}  {# Loop through each form field #}
-        <div>  {# Container for each field #}
-          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>  {# Field label #}
-          {{ field }}  {# Render the form field #}
-          {% if field.errors %}  {# Check for field-specific errors #}
-            <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>  {# Display field errors #}
-          {% endif %}  {# End field error check #}
+      {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+          {{ field|add_class:'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50' }}
+          {% if field.help_text and not field.errors %}
+            <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+          {% endif %}
+          {% if field.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
+          {% endif %}
         </div>
-      {% endfor %}  {# End form field loop #}
+      {% endfor %}
       <button type="submit" class="w-full bg-primary text-black font-semibold py-2 rounded hover:bg-black hover:text-primary transition">Send Invite</button>  {# Submit button #}
     </form>  {# End form #}
     <div class="mt-6 text-center text-sm text-gray-600">  {# Container for back link #}
