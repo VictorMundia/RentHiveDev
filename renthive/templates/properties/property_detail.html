@@ -23,14 +23,24 @@
     <h4 class="text-lg font-bold text-black mb-2">Units</h4>  {# Units section heading #}
     {% if units %}  {# Check if there are units #}
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  {# Responsive grid for units #}
-        {% for unit in units %}  {# Loop through each unit #}
-          <div class="bg-gray-100 rounded-lg p-4 border border-gray-200">  {# Card for each unit #}
-            <h5 class="font-semibold text-black mb-1">Unit {{ unit.unit_number }}</h5>  {# Unit number #}
-            <p class="text-sm text-gray-700">Bedrooms: {{ unit.bedrooms }}</p>  {# Number of bedrooms #}
-            <p class="text-sm text-gray-700">Status: {{ unit.status|title }}</p>  {# Unit status (capitalized) #}
-            <p class="text-sm text-gray-700">Rent Amount: ${{ unit.rent_amount }}</p>  {# Rent amount #}
+        {% for us in unit_statuses %}
+          <div class="bg-gray-100 rounded-lg p-4 border border-gray-200 flex flex-col gap-2">
+            <h5 class="font-semibold text-black mb-1">Unit {{ us.unit.unit_number }}</h5>
+            <p class="text-sm text-gray-700">Bedrooms: {{ us.unit.bedrooms }}</p>
+            <p class="text-sm text-gray-700">Status: {{ us.unit.status|title }}</p>
+            <p class="text-sm text-gray-700">Rent Amount: ${{ us.unit.rent_amount }}</p>
+            {% if us.rent_paid %}
+              <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-200 text-green-800 rounded">Paid</span>
+            {% else %}
+              <span class="inline-block px-2 py-1 text-xs font-semibold bg-red-200 text-red-800 rounded">Unpaid</span>
+            {% endif %}
+            {% if us.lease and us.lease.tenant %}
+              <a href="{% url 'users:send_message' us.lease.tenant.id %}" class="mt-2 inline-block bg-primary text-black font-semibold px-3 py-1 rounded hover:bg-black hover:text-primary transition">Message Tenant</a>
+            {% else %}
+              <span class="mt-2 inline-block text-xs text-gray-500">No tenant assigned</span>
+            {% endif %}
           </div>
-        {% endfor %}  {# End unit loop #}
+        {% endfor %}
       </div>
     {% else %}  {# If no units exist #}
       <p class="text-gray-700">No units found for this property.</p>  {# Message for no units #}

@@ -35,8 +35,8 @@
     <div class="space-x-4 flex items-center">  {# Container for navigation links #}
       {% if user.is_authenticated and user.user_type == 'tenant' %}  {# If user is logged in as tenant #}
       <a href="/" class="text-white hover:text-primary">Home</a>
-      <a href="/properties/" class="text-white hover:text-primary">Properties</a>
       <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">Profile</a>
+      <a href="{% url 'users:inbox' %}" class="text-white hover:text-primary">Inbox</a>
       <form method="post" action="{% url 'logout' %}" class="inline">
         {% csrf_token %}
         <button type="submit" class="text-white hover:text-primary bg-transparent border-0 p-0 m-0 cursor-pointer">Logout</button>

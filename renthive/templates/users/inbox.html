@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load form_extras %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto mt-8">
+  <h2 class="text-2xl font-bold mb-4">Inbox</h2>
+  <div class="flex flex-col h-[70vh] bg-white rounded-lg shadow border border-gray-200">
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-2">
+      {% if messages_list %}
+        {% for msg in messages_list %}
+          <div class="flex flex-col {% if msg.sender == user %}items-end{% else %}items-start{% endif %}">
+            <div class="max-w-xs px-4 py-2 rounded-lg mb-1 text-sm
+              {% if msg.sender == user %} bg-primary text-black self-end {% else %} bg-gray-200 text-black self-start {% endif %}">
+              <span>{{ msg.body }}</span>
+            </div>
+            <span class="text-xs text-gray-500 mb-2">
+              {% if msg.sender == user %}You{% else %}{{ msg.sender.get_full_name|default:msg.sender.username }}{% endif %}, {{ msg.sent_at|date:'M d, H:i' }}
+            </span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-gray-700">No messages found.</p>
+      {% endif %}
+    </div>
+    {% if owner %}
+      <form method="post" class="flex items-center gap-2 border-t p-3">
+        {% csrf_token %}
+        <input type="hidden" name="send_message" value="1" />
+        <input type="text" name="body" placeholder="Type a message..." class="flex-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required />
+        <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Send</button>
+      </form>
+      {% if send_form.body.errors %}
+        <p class="text-xs text-red-600 mt-1">{{ send_form.body.errors|striptags }}</p>
+      {% endif %}
+      {% if sent_success %}
+        <div class="mb-2 p-2 bg-green-100 text-green-800 rounded">Message sent!</div>
+      {% endif %}
+    {% endif %}
+    <a href="{% url 'users:tenant_profile' %}" class="inline-block mt-4 border border-gray-700 text-gray-700 font-semibold rounded px-4 py-2 hover:bg-gray-100 transition">Back to Profile</a>
+  </div>
+</div>
+{% endblock %}

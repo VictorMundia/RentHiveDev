@@ -65,24 +65,40 @@ def property_list(request):  # View to list properties for the owner
 @login_required  # Require login
 def property_detail(request, pk):  # View to show property details
     property = get_object_or_404(Property, pk=pk, owner=request.user)  # Get property by pk and owner
-    units = property.units.all()  # Get all units for property
-    vacant_units = units.filter(status='vacant').count()  # Count vacant units
-    occupied_units = units.filter(status='occupied').count()  # Count occupied units
-    paid_units = unpaid_units = 0  # Initialize counters
-    total_rent_paid = 0  # Initialize total rent paid
-    for unit in units:  # Loop through units
-        lease = unit.leases.filter(is_active=True).first()  # Get active lease
-        if lease:  # If lease exists
-            payment = Payment.objects.filter(lease=lease, is_confirmed=True).order_by('-payment_date').first()  # Get latest payment
-            if payment:  # If payment exists
-                paid_units += 1  # Increment paid units
-                total_rent_paid += payment.amount  # Add to total rent paid
+    units = property.units.all()
+    vacant_units = units.filter(status='vacant').count()
+    occupied_units = units.filter(status='occupied').count()
+    paid_units = unpaid_units = 0
+    total_rent_paid = 0
+    unit_statuses = []
+    from datetime import date
+    today = date.today()
+    for unit in units:
+        lease = unit.leases.order_by('-start_date').first()
+        rent_paid = False
+        if lease:
+            payment = Payment.objects.filter(
+                lease=lease,
+                is_confirmed=True,
+                payment_date__year=today.year,
+                payment_date__month=today.month
+            ).order_by('-payment_date').first()
+            if payment:
+                paid_units += 1
+                total_rent_paid += payment.amount
+                rent_paid = True
             else:
-                unpaid_units += 1  # Increment unpaid units
-    maintenance_requests = MaintenanceRequest.objects.filter(unit__in=units).count()  # Count maintenance requests
-    return render(request, 'properties/property_detail.html', {  # Render property detail template
+                unpaid_units += 1
+        unit_statuses.append({
+            'unit': unit,
+            'rent_paid': rent_paid,
+            'lease': lease
+        })
+    maintenance_requests = MaintenanceRequest.objects.filter(unit__in=units).count()
+    return render(request, 'properties/property_detail.html', {
         'property': property,
         'units': units,
+        'unit_statuses': unit_statuses,
         'vacant_units': vacant_units,
         'occupied_units': occupied_units,
         'paid_units': paid_units,
@@ -157,7 +173,11 @@ def invite_tenant(request, unit_id):  # View to invite a tenant to a unit
 
 @login_required  # Require login
 def invite_tenant_property(request, pk):  # View to invite a tenant to a property (assigns to vacant unit)
-    property = get_object_or_404(Property, pk=pk, owner=request.user)  # Get property by pk and owner
+    try:
+        property = Property.objects.get(pk=pk, owner=request.user)
+    except Property.DoesNotExist:
+        messages.error(request, "The property you are trying to invite a tenant to does not exist or you do not have permission.")
+        return redirect('properties:property_list')
     if request.method == 'POST':  # If form submitted
         form = TenantInviteForm(request.POST)  # Bind form with POST data
         if form.is_valid():  # If form is valid

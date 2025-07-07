@@ -1,3 +1,86 @@
+# Tenant inbox view
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def inbox(request):
+    # Only tenants can access their inbox
+    if not request.user.user_type == 'tenant':
+        return redirect('users:dashboard')
+    from properties.models import Lease
+    from .forms_message import MessageForm
+    # Find the most recent lease for this tenant
+    lease = Lease.objects.filter(tenant=request.user).order_by('-start_date').first()
+    owner = lease.unit.property.owner if lease else None
+    send_form = MessageForm()
+    sent_success = False
+
+    # Show all messages between tenant and owner (both directions)
+    if owner:
+        messages_list = Message.objects.filter(
+            (models.Q(sender=request.user) & models.Q(recipient=owner)) |
+            (models.Q(sender=owner) & models.Q(recipient=request.user))
+        ).order_by('sent_at')
+    else:
+        messages_list = Message.objects.filter(recipient=request.user).order_by('sent_at')
+
+    if owner and request.method == 'POST' and 'send_message' in request.POST:
+        # Only body is required for chat
+        send_form = MessageForm(request.POST)
+        send_form.fields.pop('subject', None)
+        if send_form.is_valid():
+            msg = send_form.save(commit=False)
+            msg.sender = request.user
+            msg.recipient = owner
+            msg.subject = ''
+            msg.save()
+            sent_success = True
+            send_form = MessageForm()
+            send_form.fields.pop('subject', None)
+
+    # Remove subject field for chat UI
+    send_form.fields.pop('subject', None)
+
+    return render(request, 'users/inbox.html', {
+        'messages_list': messages_list,
+        'send_form': send_form,
+        'sent_success': sent_success,
+        'owner': owner
+    })
+
+from .forms_message import MessageForm
+from .models_message import Message
+from .models import User
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+# Owner sends message to tenant
+@login_required
+def send_message(request, tenant_id):
+    tenant = get_object_or_404(User, pk=tenant_id, user_type='tenant')
+    from .models_message import Message
+    from django.db import models
+    # Show all messages between owner and tenant (both directions)
+    messages_list = Message.objects.filter(
+        (models.Q(sender=request.user) & models.Q(recipient=tenant)) |
+        (models.Q(sender=tenant) & models.Q(recipient=request.user))
+    ).order_by('sent_at')
+    sent_success = False
+    if request.method == 'POST':
+        body = request.POST.get('body', '').strip()
+        if body:
+            Message.objects.create(
+                sender=request.user,
+                recipient=tenant,
+                subject='',
+                body=body
+            )
+            sent_success = True
+    return render(request, 'users/send_message.html', {
+        'tenant': tenant,
+        'messages_list': messages_list,
+        'sent_success': sent_success,
+        'form': MessageForm()
+    })
 from users.forms import OwnerBankAccountForm  # Import the form for owner bank account details
 from users.models_bank import OwnerBankAccount  # Import the OwnerBankAccount model
 from django.contrib import messages  # Import Django's messaging framework
@@ -136,7 +219,7 @@ def profile(request):
             occupied_units = units.filter(status='occupied').count()  # Count occupied units
             paid_units = unpaid_units = 0  # Initialize paid/unpaid counters
             for unit in units:  # For each unit
-                lease = unit.leases.filter(is_active=True).first()  # Get active lease
+                lease = unit.leases.order_by('-start_date').first()  # Get most recent lease
                 if lease:
                     payment = Payment.objects.filter(lease=lease, is_confirmed=True).order_by('-payment_date').first()  # Get latest confirmed payment
                     if payment:
@@ -178,11 +261,21 @@ def register(request):
             if invited_unit and form.cleaned_data.get('user_type') == 'tenant':
                 invited_unit.status = 'occupied'  # Mark unit as occupied
                 invited_unit.save()  # Save unit
+                from properties.models import Lease
+                from django.utils import timezone
+                Lease.objects.create(
+                    unit=invited_unit,
+                    tenant=user,
+                    start_date=timezone.now().date(),
+                    end_date=timezone.now().date().replace(year=timezone.now().year + 1),
+                    rent_amount=invited_unit.rent_amount
+                )
             login(request, user)  # Log in user
             if user.user_type == 'owner':  # If owner, redirect to bank details
                 return redirect('users:owner_bank_details')
-            return redirect('users:profile')  # Redirect to profile
-            invited_unit.save()  # (Unreachable code, can be removed)
+            if user.user_type == 'tenant':
+                return redirect('users:tenant_profile')  # Redirect tenant to their profile
+            return redirect('users:profile')  # Redirect to profile (fallback)
             login(request, user)  # (Unreachable code, can be removed)
             if user.user_type == 'owner':  # (Unreachable code, can be removed)
                 return redirect('users:owner_bank_details')
@@ -211,7 +304,7 @@ def register(request):
 @login_required  # Require user to be logged in
 def tenant_profile(request):
     user = request.user  # Get current user
-    lease = Lease.objects.filter(tenant=user, is_active=True).first()  # Get active lease
+    lease = Lease.objects.filter(tenant=user).order_by('-start_date').first()  # Get most recent lease
     unit = lease.unit if lease else None  # Get unit from lease
     payments = Payment.objects.filter(lease=lease).order_by('-payment_date') if lease else []  # Get payments for lease
     maintenance_requests = MaintenanceRequest.objects.filter(requested_by=user).order_by('-created_at')  # Get user's maintenance requests

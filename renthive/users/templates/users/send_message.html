@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load form_extras %}
+{% block title %}Send Message{% endblock %}
+{% block content %}
+<div class="flex flex-col h-[70vh] bg-white rounded-lg shadow border border-gray-200 max-w-xl mx-auto mt-8">
+  <div class="flex-1 flex flex-col justify-end p-4 overflow-y-auto">
+    <div class="mb-4">
+      <h2 class="text-2xl font-bold text-black mb-2">Message to {{ tenant.get_full_name }}</h2>
+      <p class="text-gray-600 text-sm mb-2">Start a conversation with your tenant below.</p>
+    </div>
+    <div class="flex-1 flex flex-col-reverse gap-2 mb-4">
+      {% if messages_list %}
+        {% for msg in messages_list %}
+          <div class="flex flex-col {% if msg.sender == user %}items-end{% else %}items-start{% endif %}">
+            <div class="max-w-xs px-4 py-2 rounded-lg mb-1 text-sm
+              {% if msg.sender == user %} bg-primary text-black self-end {% else %} bg-gray-200 text-black self-start {% endif %}">
+              <span>{{ msg.body }}</span>
+            </div>
+            <span class="text-xs text-gray-500 mb-2">
+              {% if msg.sender == user %}You{% else %}{{ msg.sender.get_full_name|default:msg.sender.username }}{% endif %}, {{ msg.sent_at|date:'M d, H:i' }}
+            </span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-gray-700">No messages found.</p>
+      {% endif %}
+    </div>
+    <form method="post" class="flex items-center gap-2 border-t pt-3">
+      {% csrf_token %}
+      <input type="text" name="subject" value="" hidden />
+      <input type="text" name="body" placeholder="Type a message..." class="flex-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-gray-50" required />
+      <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Send</button>
+    </form>
+    {% if sent_success %}
+      <div class="mb-2 p-2 bg-green-100 text-green-800 rounded">Message sent!</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
