@@ -82,8 +82,8 @@
       </div>
     </div>
   {% endif %}  {# End selected property statistics #}
-  <div class="mb-6 mt-10">  {# Spacing for maintenance requests button #}
-    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>  {# Button to view all maintenance requests #}
+  <div class="mb-6 mt-10 flex items-center">  {# Spacing for maintenance requests #}
+    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition text-center">View All Maintenance Requests</a>
   </div>
 </div>
 {% endblock %}  {# End content block #}

@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent  # Set BASE_DIR to the root di
 SECRET_KEY = 'django-insecure-8v$y2^!c42&a81)4rgt!nalp!s#ct=rq-_k%n01^_5_%76es#4'  # Secret key for Django project
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Enable debug mode (should be False in production)
+DEBUG = False  # Enable debug mode (should be False in production)
 
-ALLOWED_HOSTS = []  # List of allowed hosts (empty means only localhost)
+ALLOWED_HOSTS = ["*"]  # List of allowed hosts (empty means only localhost)
 
 
 # Application definition
@@ -134,6 +134,7 @@ USE_TZ = True  # Enable timezone-aware datetimes
 
 STATIC_URL = '/static/'  # URL to access static files
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Directories for static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
