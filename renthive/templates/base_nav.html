@@ -1,0 +1,45 @@
+{% load static %}  {# Load static files template tag #}
+<nav class="bg-black shadow mb-8">  {# Navigation bar with black background and shadow #}
+  <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">  {# Container for nav content, centered and spaced #}
+    <!-- Link to homepage with logo and site name -->
+    <a href="/" class="flex items-center space-x-2">  {# Homepage link with logo and site name #}
+      <!-- RentHive logo image -->
+      <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />  {# Logo image #}
+      <!-- Site name text -->
+      <span class="text-xl font-bold text-white">RentHive</span>  {# Site name text #}
+    </a>
+    <div class="space-x-4 flex items-center">  {# Navigation links container #}
+      {% if is_minimal_nav %}  {# If minimal navigation is enabled #}
+        <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+        <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>  {# Login link #}
+        <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>  {# Sign Up button #}
+      {% elif user.is_authenticated and user.user_type == 'tenant' %}  {# If user is a logged-in tenant #}
+        <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+        <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">Profile</a>  {# Tenant profile link #}
+        <a href="{% url 'users:inbox' %}" class="text-white hover:text-primary">Inbox</a>  {# Inbox link #}
+        <form method="post" action="{% url 'logout' %}" class="inline-block align-middle m-0 p-0">  {# Logout form #}
+          {% csrf_token %}  {# CSRF token for security #}
+          <button type="submit" class="bg-gradient-to-r from-primary to-pink-500 text-black font-semibold px-4 py-1 rounded shadow hover:from-black hover:to-primary hover:text-white transition duration-200 border-0 cursor-pointer align-middle whitespace-nowrap flex items-center gap-2">  {# Logout button with styling #}
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" /></svg>  {# Logout icon #}
+            Logout  {# Logout text #}
+          </button>
+        </form>
+      {% elif user.is_authenticated and user.user_type == 'owner' %}  {# If user is a logged-in owner #}
+        <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+        <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}
+        <a href="/users/profile/" class="text-white hover:text-primary">Profile</a>  {# Owner profile link #}
+        <div class="flex items-center">  {# Container for logout form #}
+          <form method="post" action="{% url 'logout' %}" class="inline">  {# Logout form #}
+            {% csrf_token %}  {# CSRF token for security #}
+            <button type="submit" class="text-white hover:text-primary bg-transparent border-0 p-0 m-0 cursor-pointer">Logout</button>  {# Logout button #}
+          </form>
+        </div>
+      {% else %}  {# For unauthenticated users or other cases #}
+        <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
+        <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}
+        <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>  {# Login link #}
+        <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>  {# Sign Up button #}
+      {% endif %}
+    </div>
+  </div>
+</nav>

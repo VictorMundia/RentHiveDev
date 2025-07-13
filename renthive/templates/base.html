@@ -1,4 +1,14 @@
 {% load static %}  {# Loads the static template tag for referencing static files #}
+{# Minimal nav logic for login/register/password reset pages #}
+{% with path=request.path %}
+  {% if path == '/accounts/login/' or path == '/users/register/' or path|cut:'/accounts/login/' == '/users/password_reset/' or path|cut:'/accounts/login/' == '/users/reset/' %}
+    {% with is_minimal_nav=True %}
+      {% include 'base_nav.html' %}
+    {% endwith %}
+  {% else %}
+    {% include 'base_nav.html' %}
+  {% endif %}
+{% endwith %}
 <!DOCTYPE html>  {# Declares the document type as HTML5 #}
 <html lang="en">  {# Opens the HTML document and sets the language to English #}
 <head>  {# Opens the head section containing meta and link tags #}
@@ -26,38 +36,7 @@
   </script>  {# Configures Tailwind CSS with custom colors #}
 </head>
 <body class="flex flex-col min-h-screen bg-primary/10">  {# Body uses Tailwind classes for layout and background #}
-  <nav class="bg-black shadow mb-8">  {# Navigation bar with black background and shadow #}
-    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">  {# Container for nav content, centered and spaced #}
-    <a href="/" class="flex items-center space-x-2">  {# Logo and site name link to home #}
-      <img src="{% static 'img/RENTHIVE.png' %}" alt="RentHive Logo" class="h-10 w-10 object-contain" />  {# Logo image from static files #}
-      <span class="text-xl font-bold text-white">RentHive</span>  {# Site name styled #}
-    </a>
-    <div class="space-x-4 flex items-center">  {# Container for navigation links #}
-      {% if user.is_authenticated and user.user_type == 'tenant' %}  {# If user is logged in as tenant #}
-      <a href="/" class="text-white hover:text-primary">Home</a>
-      <a href="{% url 'users:tenant_profile' %}" class="text-white hover:text-primary">Profile</a>
-      <a href="{% url 'users:inbox' %}" class="text-white hover:text-primary">Inbox</a>
-      <form method="post" action="{% url 'logout' %}" class="inline">
-        {% csrf_token %}
-        <button type="submit" class="text-white hover:text-primary bg-transparent border-0 p-0 m-0 cursor-pointer">Logout</button>
-      </form>
-      {% elif user.is_authenticated and user.user_type == 'owner' %}  {# If user is logged in as owner #}
-      <a href="/" class="text-white hover:text-primary">Home</a>
-      <a href="/properties/" class="text-white hover:text-primary">Properties</a>
-      <a href="/users/profile/" class="text-white hover:text-primary">Profile</a>
-      <form method="post" action="{% url 'logout' %}" class="inline">
-        {% csrf_token %}
-        <button type="submit" class="text-white hover:text-primary bg-transparent border-0 p-0 m-0 cursor-pointer">Logout</button>
-      </form>
-      {% else %}  {# If user is not authenticated #}
-      <a href="/" class="text-white hover:text-primary">Home</a>  {# Home link #}
-      <a href="/properties/" class="text-white hover:text-primary">Properties</a>  {# Properties link #}
-      <a href="/accounts/login/" class="text-white hover:text-primary">Login</a>  {# Login link #}
-      <a href="/users/register/" class="text-black font-semibold bg-white px-3 py-1 rounded hover:bg-primary hover:text-black transition">Sign Up</a>  {# Sign up button styled #}
-      {% endif %}
-    </div>
-    </div>
-  </nav>
+  {# Navigation bar is now included via base_nav.html for easier logic separation #}
   <main class="flex-1">  {# Main content area, grows to fill available space #}
     <div class="max-w-4xl mx-auto w-full px-4">  {# Container for page content, centered #}
     {% block content %}{% endblock %}  {# Content block for child templates to override #}

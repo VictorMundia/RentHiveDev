@@ -1,5 +1,6 @@
 {% extends 'base.html' %}  {# Inherit from the base template #}
 {% load static %}
+{% with is_minimal_nav=True %}
 
 {% block title %}Login{% endblock %}  {# Set the page title to "Login" #}
 {% block content %}  {# Begin the content block #}
@@ -33,3 +34,4 @@
   </div>
 </div>
 {% endblock %}  {# End content block #}
+{% endwith %}
