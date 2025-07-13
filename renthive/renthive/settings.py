@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent  # Set BASE_DIR to the root di
 SECRET_KEY = 'django-insecure-8v$y2^!c42&a81)4rgt!nalp!s#ct=rq-_k%n01^_5_%76es#4'  # Secret key for Django project
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # Enable debug mode (should be False in production)
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True' # Enable debug mode (should be False in production)
 
 ALLOWED_HOSTS = ["*"]  # List of allowed hosts (empty means only localhost)
 
@@ -80,6 +80,9 @@ WSGI_APPLICATION = 'renthive.wsgi.application'  # WSGI application entry point
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+# If you want to use dj_database_url, make sure to import it at the top:
+# import dj_database_url
 
 DATABASES = {  # Database configuration
     'default': {
