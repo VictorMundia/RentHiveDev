@@ -1,29 +1,68 @@
 {% extends 'base.html' %}  {# Inherit from the base template #}
 {% block title %}Dashboard{% endblock %}  {# Set the page title to "Dashboard" #}
 {% block content %}  {# Start the content block #}
-{% if notifications %}  {# Check if there are any notifications #}
-  <div class="mb-6">  {# Add margin-bottom for spacing #}
-    <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded shadow text-black">  {# Styled notification box #}
-      <h3 class="font-bold mb-2">Maintenance Notifications</h3>  {# Section heading #}
-      <ul class="space-y-2">  {# List with vertical spacing between items #}
-        {% for note in notifications %}  {# Loop through each notification #}
-          <li>  {# List item for each notification #}
-            <a href="{{ note.url }}" class="font-semibold text-primary hover:underline">{{ note.message }}</a>  {# Notification message as a link #}
-            <span class="text-xs text-gray-600 ml-2">{{ note.created_at|date:"M d, H:i" }}</span>  {# Display creation date and time #}
-          </li>
-        {% endfor %}  {# End of notifications loop #}
-      </ul>
+{% if user.is_authenticated and user.user_type == 'owner' %}
+  <div class="container mt-5">
+    <h2 class="mb-4 text-2xl font-bold">Owner Dashboard</h2>
+    <p class="mb-6">Welcome, {{ user.first_name }}! Here is a summary of your properties and recent activity.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+        <h3 class="text-lg font-bold mb-2">Your Properties</h3>
+        {% if properties %}
+          <ul class="list-disc pl-5">
+            {% for property in properties %}
+              <li>{{ property.name }} ({{ property.units.count }} units)</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-gray-700">No properties found.</p>
+        {% endif %}
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+        <h3 class="text-lg font-bold mb-2">Pending Payments</h3>
+        {% if pending_payments %}
+          <ul class="list-disc pl-5">
+            {% for payment in pending_payments %}
+              <li>
+                ${{ payment.amount }} - {{ payment.lease.unit.property.name }} Unit {{ payment.lease.unit.unit_number }} ({{ payment.payment_date|date:'M d, Y' }})
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-gray-700">No pending payments.</p>
+        {% endif %}
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+        <h3 class="text-lg font-bold mb-2">Pending Maintenance Requests</h3>
+        {% if pending_requests %}
+          <ul class="list-disc pl-5">
+            {% for req in pending_requests %}
+              <li>{{ req.unit.property.name }} Unit {{ req.unit.unit_number }} - {{ req.issue }} ({{ req.created_at|date:'M d, Y' }})</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-gray-700">No pending maintenance requests.</p>
+        {% endif %}
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+        <h3 class="text-lg font-bold mb-2">Notifications</h3>
+        {% if notifications %}
+          <ul class="list-disc pl-5">
+            {% for note in notifications %}
+              <li>{{ note.message }} <span class="text-xs text-gray-600 ml-2">{{ note.created_at|date:"M d, H:i" }}</span></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-gray-700">No notifications.</p>
+        {% endif %}
+      </div>
     </div>
+    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>
   </div>
-{% endif %}  {# End of notifications check #}
-<div class="container mt-5">  {# Main dashboard container with top margin #}
-    <h2 class="mb-4">Dashboard</h2>  {# Dashboard heading #}
-    <p>Welcome to your dashboard! Here you can see a summary of your account and recent activity.</p>  {# Welcome message #}
-    <!-- Add more dashboard widgets or stats as needed -->  {# Placeholder for additional widgets #}
-</div>
-{% if user.is_authenticated and user.user_type == 'owner' %}  {# Check if user is logged in and is an owner #}
-  <div class="mb-6">  {# Add margin-bottom for spacing #}
-    <a href="{% url 'maintenance:owner_requests_dashboard' %}" class="inline-block bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">View All Maintenance Requests</a>  {# Button linking to owner's maintenance requests #}
+{% else %}
+  <div class="container mt-5">
+    <h2 class="mb-4">Dashboard</h2>
+    <p>Welcome to your dashboard! Here you can see a summary of your account and recent activity.</p>
   </div>
-{% endif %}  {# End of owner check #}
+{% endif %}
 {% endblock %}  {# End of content block #}

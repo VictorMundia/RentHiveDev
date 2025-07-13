@@ -1,26 +1,47 @@
+from django.contrib.auth import authenticate
 
-from django.contrib.auth import logout, login
-from django.contrib import messages
-from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse
-from properties.models import Lease, Unit, Property
-from payments.models import Payment
-from maintenance.models import MaintenanceRequest
-from .forms import RegisterForm
-from .forms_message import MessageForm
-from .models_message import Message
-from .models import User
-from users.forms import OwnerBankAccountForm
-from users.models_bank import OwnerBankAccount
-from django.utils import timezone
-from django.db import models
-from django.core.mail import send_mail
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-import json
-from payments.mpesa import stk_push
+def custom_login(request):
+    error_message = None
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        selected_type = request.POST.get('user_type')  # 'tenant' or 'owner'
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            if user.user_type == selected_type:
+                login(request, user)
+                if user.user_type == 'owner':
+                    return redirect('users:profile')
+                elif user.user_type == 'tenant':
+                    return redirect('users:tenant_profile')
+            else:
+                error_message = 'User type does not match your profile. Please select the correct type.'
+        else:
+            error_message = 'Invalid username or password.'
+    return render(request, 'users/login.html', {'error_message': error_message})
+
+from django.contrib.auth import logout, login  # Import logout and login functions for authentication
+from django.contrib import messages  # Import messages framework for user notifications
+from django.shortcuts import redirect, render, get_object_or_404  # Import shortcuts for common view operations
+from django.contrib.auth.decorators import login_required  # Import decorator to require login for views
+from django.urls import reverse  # Import reverse for URL resolution
+from django.http import HttpResponseRedirect, JsonResponse  # Import HTTP response classes
+from properties.models import Lease, Unit, Property  # Import models from properties app
+from payments.models import Payment  # Import Payment model
+from maintenance.models import MaintenanceRequest  # Import MaintenanceRequest model
+from .forms import RegisterForm  # Import registration form
+from .forms_message import MessageForm  # Import message form for chat
+from .models_message import Message  # Import Message model for chat
+from .models import User  # Import custom User model
+from users.forms import OwnerBankAccountForm  # Import owner bank account form
+from users.models_bank import OwnerBankAccount  # Import OwnerBankAccount model
+from django.utils import timezone  # Import timezone utilities
+from django.db import models  # Import Django models module
+from django.core.mail import send_mail  # Import send_mail for email notifications
+from django.conf import settings  # Import settings for configuration
+from django.views.decorators.csrf import csrf_exempt  # Import CSRF exemption decorator
+import json  # Import json for parsing JSON data
+from payments.mpesa import stk_push  # Import stk_push for Mpesa payments
 
 @login_required
 def inbox(request):
@@ -212,34 +233,16 @@ def register(request):
                     tenant=user,
                     start_date=timezone.now().date(),
                     end_date=timezone.now().date().replace(year=timezone.now().year + 1),
-                    rent_amount=invited_unit.rent_amount
+                    rent_amount=invited_unit.rent_amount,
+                    is_active=True  # Ensure lease is active
                 )
+                request.session['welcome_property'] = invited_unit.property.name  # Store property name in session
             login(request, user)  # Log in user
             if user.user_type == 'owner':  # If owner, redirect to bank details
                 return redirect('users:owner_bank_details')
             if user.user_type == 'tenant':
-                return redirect('users:tenant_profile')  # Redirect tenant to their profile
+                return redirect('users:dashboard')  # Redirect tenant to dashboard
             return redirect('users:profile')  # Redirect to profile (fallback)
-            login(request, user)  # (Unreachable code, can be removed)
-            if user.user_type == 'owner':  # (Unreachable code, can be removed)
-                return redirect('users:owner_bank_details')
-            return redirect('users:profile')  # (Unreachable code, can be removed)
-            invited_unit.save()  # (Unreachable code, can be removed)
-            Lease.objects.create(
-                    unit=invited_unit,  # Assign lease to invited unit
-                    tenant=user,  # Assign tenant
-                    start_date=timezone.now().date(),  # Set start date
-                    end_date=timezone.now().date().replace(year=timezone.now().year + 1),  # Set end date (1 year later)
-                    rent_amount=invited_unit.rent_amount,  # Set rent amount
-                    is_active=True  # Mark lease as active
-                )
-            login(request, user)  # Log in user
-            if invited_unit:
-                request.session['welcome_property'] = invited_unit.property.name  # Store property name in session
-            if user.user_type == 'owner':
-                return redirect('users:profile')  # Redirect owner to profile
-            else:
-                return redirect('users:tenant_profile')  # Redirect tenant to tenant profile
     else:
         form = RegisterForm()  # Create empty registration form
     show_errors = request.method == 'POST'  # Show errors only if form was submitted

@@ -47,35 +47,39 @@
                 <span class="text-xs text-gray-700">Card</span>  {# Card label #}
               </label>
             </div>
-            <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Pay Rent</button>  {# Pay rent button #}
+            <button type="button" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition" onclick="simulatePayment()">Pay Rent</button>  {# Simulate Pay rent button #}
           </form>
           <script>
-            document.addEventListener('DOMContentLoaded', function() {  // Wait for DOM to load
-              const mpesaRadio = document.getElementById('mpesa-radio');  // Get Mpesa radio button
-              const form = mpesaRadio.closest('form');  // Get the form element
-              mpesaRadio.addEventListener('change', function() {  // On Mpesa selection
-                if (mpesaRadio.checked) {
-                  const amount = form.querySelector('input[name="amount"]').value;  // Get amount value
-                  window.location.href = "{% url 'users:lipa_na_mpesa' %}?amount=" + encodeURIComponent(amount);  // Redirect to Mpesa payment
-                }
-              });
-              // Card redirect
-              const cardRadio = form.querySelector('input[value="card"]');  // Get Card radio button
-              cardRadio.addEventListener('change', function() {  // On Card selection
-                if (cardRadio.checked) {
-                  const amount = form.querySelector('input[name="amount"]').value;  // Get amount value
-                  window.location.href = "{% url 'users:card_payment' %}?amount=" + encodeURIComponent(amount);  // Redirect to Card payment
-                }
-              });
-              // Bank redirect
-              const bankRadio = form.querySelector('input[value="bank"]');  // Get Bank radio button
-              bankRadio.addEventListener('change', function() {  // On Bank selection
-                if (bankRadio.checked) {
-                  const amount = form.querySelector('input[name="amount"]').value;  // Get amount value
-                  window.location.href = "{% url 'users:bank_transfer' %}?amount=" + encodeURIComponent(amount);  // Redirect to Bank payment
-                }
-              });
-            });
+            function simulatePayment() {
+              var amount = document.getElementById('amount').value;
+              var method = document.querySelector('input[name="payment_method"]:checked');
+              if (!amount || !method) {
+                alert('Please enter an amount and select a payment method.');
+                return;
+              }
+              var methodText = method.value.charAt(0).toUpperCase() + method.value.slice(1);
+              // Remove any previous success message
+              var form = document.querySelector('form');
+              var oldSuccess = form.parentNode.querySelector('.mt-2.p-2.bg-green-100');
+              if (oldSuccess) oldSuccess.remove();
+              // Show success message
+              var successDiv = document.createElement('div');
+              successDiv.className = 'mt-2 p-2 bg-green-100 text-green-700 rounded';
+              successDiv.innerText = 'Payment received! A receipt has been sent to your email.';
+              form.parentNode.insertBefore(successDiv, form.nextSibling);
+              // Show receipt modal
+              var now = new Date().toLocaleString();
+              showReceipt('Demo', amount, now, methodText, 'DemoCode', 'Confirmed');
+              // Add payment to history (demo only)
+              var historyList = document.querySelector('.payment-history-list');
+              if (historyList) {
+                var li = document.createElement('li');
+                li.innerHTML = `$${amount} - ${now} - ${methodText} (Confirmed) <button type="button" class="ml-2 text-primary underline" onclick="showReceipt('Demo', '${amount}', '${now}', '${methodText}', 'DemoCode', 'Confirmed')">View Receipt</button>`;
+                historyList.insertBefore(li, historyList.firstChild);
+              }
+              // Reset form
+              form.reset();
+            }
           </script>
         </div>
         {% if payment_success %}  {# If payment was successful #}
@@ -85,10 +89,11 @@
       <div class="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">  {# Payment history card #}
         <h3 class="text-xl font-bold text-black mb-2">Payment History</h3>  {# Payment history heading #}
         {% if payments %}  {# If there are payments #}
-          <ul class="list-disc pl-5 text-gray-700 space-y-1">  {# List of payments #}
+          <ul class="list-disc pl-5 text-gray-700 space-y-1 payment-history-list">  {# List of payments #}
             {% for payment in payments %}  {# Loop through payments #}
               <li>
-                ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}  {# Show payment details #}
+                ${{ payment.amount }} - {{ payment.payment_date }} - {{ payment.get_payment_method_display }} {% if payment.is_confirmed %}(Confirmed){% else %}(Pending){% endif %}
+                <button type="button" class="ml-2 text-primary underline" onclick="showReceipt({{ payment.id }}, '{{ payment.amount }}', '{{ payment.payment_date }}', '{{ payment.get_payment_method_display }}', '{{ payment.transaction_code }}', '{{ payment.is_confirmed|yesno:'Confirmed,Pending' }}')">View Receipt</button>
               </li>
             {% endfor %}
           </ul>
@@ -122,4 +127,27 @@
     {% endif %}
   </div>
 </div>
+<!-- Receipt Modal -->
+<div id="receipt-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+    <h3 class="text-xl font-bold mb-2">Payment Receipt</h3>
+    <div id="receipt-content"></div>
+    <button onclick="closeReceipt()" class="mt-4 bg-primary text-black px-4 py-2 rounded">Close</button>
+  </div>
+</div>
+<script>
+  function showReceipt(id, amount, date, method, code, status) {
+    var html = `<strong>Payment ID:</strong> ${id}<br>
+                <strong>Amount:</strong> $${amount}<br>
+                <strong>Date:</strong> ${date}<br>
+                <strong>Method:</strong> ${method}<br>
+                <strong>Transaction Code:</strong> ${code}<br>
+                <strong>Status:</strong> ${status}`;
+    document.getElementById('receipt-content').innerHTML = html;
+    document.getElementById('receipt-modal').classList.remove('hidden');
+  }
+  function closeReceipt() {
+    document.getElementById('receipt-modal').classList.add('hidden');
+  }
+</script>
 {% endblock %}  {# End content block #}
