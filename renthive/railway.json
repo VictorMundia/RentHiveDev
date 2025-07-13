@@ -10,6 +10,6 @@
     ]
   },
   "start": {
-    "cmd": "RentHive.wsgi"
+    "cmd": "gunicorn renthive.wsgi"
   }
 }
