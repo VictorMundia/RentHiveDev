@@ -14,7 +14,10 @@
     {% if error_message %}
       <div class="bg-red-100 text-red-700 p-2 rounded">{{ error_message }}</div>
     {% endif %}
-    <button type="submit" class="bg-primary text-black font-semibold px-4 py-2 rounded hover:bg-black hover:text-primary transition">Login</button>
+        <button type="submit" class="w-full bg-primary text-black font-semibold py-2 rounded hover:bg-black hover:text-primary transition">Login</button>
+        <div class="mt-4 text-center">
+          <a href="{% url 'password_reset' %}" class="text-primary font-semibold hover:underline">Forgot password?</a>
+        </div>
   </form>
 </div>
 {% endblock %}
